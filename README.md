@@ -2,6 +2,8 @@
 
 ![logo](./src/assets/ICS-editor-applogo.png)
 
+Lauffähige Version (GitHub Pages): https://clavicarius.github.io/ics-editor/
+
 Eine statische, rein clientseitige Web-App zum **verlustarmen** Bearbeiten von
 `.ics`-Dateien (iCalendar). Kernidee: Die App wandelt den Kalender **nicht** in ein
 vereinfachtes internes Modell um, um ihn danach komplett neu zu serialisieren.
