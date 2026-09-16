@@ -134,6 +134,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
              </div>`
           : `<div class="empty">Öffne eine <code>.ics</code>-Datei, um zu starten. Alles bleibt lokal im Browser.</div>`
       }
+      <footer class="statusbar">
+        <span class="file-label">Datei:</span>
+        <span class="file-name">${hasModel ? escapeHtml(this.fileName) : "Keine Datei geöffnet"}</span>
+      </footer>
     `;
 
     this.querySelector<HTMLInputElement>("#file")?.addEventListener("change", (e) => {
