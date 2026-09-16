@@ -6,11 +6,12 @@
  * virtual DOM. State lives in a single CalendarModel instance.
  */
 
-import type { CalendarModel, VEvent } from "../model/types.js";
+import type { CalendarModel, DateTimeValue, VEvent } from "../model/types.js";
 import { parseIcs } from "../parser/index.js";
 import { serializeCalendar } from "../export/index.js";
 import { buildReport, validate } from "../validate/validator.js";
 import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../model/calendar.js";
+import { icalToPickerValue, pickerToIcal } from "./datetime.js";
 import logoUrl from "../assets/ICS-editor-logo.png";
 
 function fmtWhen(ev: VEvent): string {
@@ -210,8 +211,8 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
       <div class="field"><label>UID (schreibgeschützt)</label><div class="readonly">${escapeHtml(p.uid)}</div></div>
       <div class="field"><label>Titel (SUMMARY)</label><input id="e-summary" value="${escapeHtml(p.summary ?? "")}" /></div>
       <div class="row2">
-        <div class="field"><label>DTSTART</label><input id="e-dtstart" value="${escapeHtml(p.dtstart?.raw ?? "")}" /></div>
-        <div class="field"><label>DTEND</label><input id="e-dtend" value="${escapeHtml(p.dtend?.raw ?? "")}" /></div>
+        ${renderDateTimeField("dtstart", "Beginn (DTSTART)", p.dtstart)}
+        ${renderDateTimeField("dtend", "Ende (DTEND)", p.dtend)}
       </div>
       <div class="field"><label>Ort (LOCATION)</label><input id="e-location" value="${escapeHtml(p.location ?? "")}" /></div>
       <div class="field"><label>Beschreibung (DESCRIPTION)</label><textarea id="e-description" rows="4">${escapeHtml(p.description ?? "")}</textarea></div>
@@ -247,9 +248,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     on("#e-summary", "SUMMARY");
     on("#e-location", "LOCATION");
     on("#e-description", "DESCRIPTION");
-    on("#e-dtstart", "DTSTART");
-    on("#e-dtend", "DTEND");
     on("#e-rrule", "RRULE");
+
+    this.bindDateTimeField(ev, "dtstart", "DTSTART");
+    this.bindDateTimeField(ev, "dtend", "DTEND");
 
     this.querySelector("#e-delete")?.addEventListener("click", () => {
       if (confirm("Diesen Termin löschen? Andere Termine bleiben unverändert.")) {
@@ -258,6 +260,22 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
         this.renderList();
         this.renderEditor();
       }
+    });
+  }
+
+  private bindDateTimeField(ev: VEvent, key: "dtstart" | "dtend", name: "DTSTART" | "DTEND"): void {
+    const input = this.querySelector<HTMLInputElement>(`#e-${key}`);
+    const dtv = ev.parsed[key];
+    if (!input || !dtv) return;
+    input.addEventListener("change", () => {
+      const newRaw = pickerToIcal(input.value, dtv);
+      if (newRaw === dtv.raw) return;
+      dtv.raw = newRaw;
+      dtv.isUtc = newRaw.endsWith("Z");
+      setEventProperty(ev, name, newRaw);
+      const rawEl = this.querySelector(`#raw-${key}`);
+      if (rawEl) rawEl.textContent = formatRawDateTime(dtv);
+      this.renderList();
     });
   }
 
@@ -272,6 +290,30 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     this.selected = ev;
     this.render();
   }
+}
+
+function formatRawDateTime(dtv?: DateTimeValue): string {
+  if (!dtv || !dtv.raw) return "—";
+  let suffix = "";
+  if (dtv.tzid) suffix = ` (${dtv.tzid})`;
+  else if (dtv.isUtc || /Z$/.test(dtv.raw)) suffix = " (UTC)";
+  else if (dtv.isDate) suffix = " (ganztägig)";
+  return `${dtv.raw}${suffix}`;
+}
+
+function renderDateTimeField(
+  key: "dtstart" | "dtend",
+  label: string,
+  dtv?: DateTimeValue,
+): string {
+  const picker = dtv
+    ? icalToPickerValue(dtv)
+    : { type: "datetime-local" as const, value: "" };
+  return `<div class="field">
+      <label>${escapeHtml(label)}</label>
+      <input type="${picker.type}" id="e-${key}" value="${escapeHtml(picker.value)}" />
+      <div class="raw-value" id="raw-${key}">${escapeHtml(formatRawDateTime(dtv))}</div>
+    </div>`;
 }
 
 function escapeHtml(s: string): string {
