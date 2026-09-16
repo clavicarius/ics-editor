@@ -105,6 +105,10 @@ input, select, textarea {
 .field { margin-bottom: 0.75rem; }
 .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.2rem; }
 .field .readonly { color: var(--muted); }
+.field .raw-value {
+  color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
 
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
 
