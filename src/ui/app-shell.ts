@@ -127,9 +127,11 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
                 </div>
                 <div id="list"></div>
               </section>
-              <section class="panel" id="editor"></section>
-             </div>
-             <div class="layout"><div class="panel" id="report" style="grid-column:1/-1"></div></div>`
+              <section class="panel editor-panel">
+                <div id="editor"></div>
+                <div id="report"></div>
+              </section>
+             </div>`
           : `<div class="empty">Öffne eine <code>.ics</code>-Datei, um zu starten. Alles bleibt lokal im Browser.</div>`
       }
     `;

@@ -26,15 +26,15 @@
 
 * { box-sizing: border-box; }
 
-body { margin: 0; background: var(--bg); color: var(--text); }
+body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 
-ics-app { display: block; min-height: 100vh; }
+ics-app { display: flex; flex-direction: column; height: 100vh; }
 
 .toolbar {
   display: flex; gap: 0.75rem; align-items: center;
   padding: 0.75rem 1rem; background: var(--panel);
   border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 10;
+  position: sticky; top: 0; z-index: 10; flex-shrink: 0;
 }
 .toolbar .brand {
   display: flex; align-items: center; gap: 0.5rem;
@@ -42,7 +42,7 @@ ics-app { display: block; min-height: 100vh; }
 }
 .toolbar .brand img {
   display: block;
-  height: calc(1em + 0.8rem + 2px);
+  height: calc(3em + 0.8rem + 2px);
   width: auto;
 }
 .toolbar h1 { font-size: 1rem; margin: 0; }
@@ -59,15 +59,21 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .layout {
   display: grid;
   grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.2fr);
-  gap: 1rem; padding: 1rem; align-items: start;
+  gap: 1rem; padding: 1rem; align-items: stretch;
+  flex: 1; min-height: 0;
 }
 
 .panel {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 10px; padding: 1rem;
+  display: flex; flex-direction: column; min-height: 0;
 }
 
-.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.editor-panel { overflow-y: auto; gap: 1rem; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; flex-shrink: 0; }
+
+#list { flex: 1; min-height: 0; overflow-y: auto; }
 .filters input[type="search"] { flex: 1; min-width: 160px; }
 
 input, select, textarea {
