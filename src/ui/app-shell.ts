@@ -11,6 +11,7 @@ import { parseIcs } from "../parser/index.js";
 import { serializeCalendar } from "../export/index.js";
 import { buildReport, validate } from "../validate/validator.js";
 import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../model/calendar.js";
+import logoUrl from "../assets/ICS-editor-appicon.png";
 
 function fmtWhen(ev: VEvent): string {
   const dt = ev.parsed.dtstart;
@@ -106,7 +107,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     const hasModel = !!this.model;
     this.innerHTML = `
       <div class="toolbar">
-        <h1>ICS-Editor <small style="color:var(--muted)">verlustarm &amp; lokal</small></h1>
+        <div class="brand">
+          <img src="${logoUrl}" alt="" width="32" height="32" />
+          <h1>ICS-Editor <small style="color:var(--muted)">verlustarm &amp; lokal</small></h1>
+        </div>
         <input type="file" id="file" accept=".ics,text/calendar" />
         <button id="add" ${hasModel ? "" : "disabled"}>+ Termin</button>
         <button id="export" class="primary" ${hasModel ? "" : "disabled"}>Export</button>
