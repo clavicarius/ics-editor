@@ -40,6 +40,8 @@ npm test           # Vitest (u. a. Roundtrip-Tests)
 npm run build      # Produktionsbuild nach dist/
 ```
 
+Ein Pre-Commit-Hook (Husky) führt vor jedem Commit `npm test` und `npm run build` aus. Schlägt einer der Schritte fehl, wird der Commit abgebrochen. Notausstieg: `git commit --no-verify`.
+
 ## Dokumentation
 
 Das Code-Wiki liegt unter [`docs/`](docs/Home.md):
