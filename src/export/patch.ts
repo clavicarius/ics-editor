@@ -61,13 +61,20 @@ export function serializeCalendar(
   // Map component -> changed property names, and collect deleted components.
   const changedByComponent = new Map<Component, Set<string>>();
   const deleted = new Set<Component>();
+  let rebuildRoot = false;
   for (const ev of model.events) {
-    if (ev.isDeleted) deleted.add(ev.component);
-    if (ev.changedProperties.size > 0) {
+    if (ev.isDeleted) {
+      deleted.add(ev.component);
+      rebuildRoot = true;
+    }
+    if (ev.changedProperties.size > 0 || ev.isNew) {
       ev.component.dirty = true;
       changedByComponent.set(ev.component, ev.changedProperties);
+      rebuildRoot = true;
     }
   }
+  // Parent VCALENDAR otherwise emits rawLines verbatim and would ignore child edits.
+  if (rebuildRoot) model.root.dirty = true;
 
   const out: string[] = [];
   emitComponent(model.root, changedByComponent, deleted, out);
