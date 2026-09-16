@@ -91,6 +91,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 #list { flex: 1; min-height: 0; overflow-y: auto; }
 .filters input[type="search"] { flex: 1; min-width: 160px; }
+.filters input[type="checkbox"] {
+  width: auto;
+  flex: 0 0 auto;
+}
 
 input, select, textarea {
   font: inherit; padding: 0.4rem 0.5rem;
