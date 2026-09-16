@@ -48,6 +48,15 @@ ics-app { display: flex; flex-direction: column; height: 100vh; }
 .toolbar h1 { font-size: 1rem; margin: 0; }
 .toolbar button { white-space: nowrap; }
 
+.statusbar {
+  display: flex; gap: 0.4rem; align-items: center;
+  padding: 0.4rem 1rem; background: var(--panel);
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.statusbar .file-label { color: var(--muted); }
+.statusbar .file-name { font-weight: 600; }
+
 button {
   font: inherit; padding: 0.4rem 0.8rem;
   border: 1px solid var(--border); border-radius: 6px;
