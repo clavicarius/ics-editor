@@ -1,6 +1,6 @@
 # ICS-Editor — verlustarm & lokal
 
-![logo](./assets/ICS-editor-applogo.png)
+![logo](./src/assets/ICS-editor-applogo.png)
 
 Eine statische, rein clientseitige Web-App zum **verlustarmen** Bearbeiten von
 `.ics`-Dateien (iCalendar). Kernidee: Die App wandelt den Kalender **nicht** in ein
