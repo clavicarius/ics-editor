@@ -20,6 +20,7 @@ Properties, `VTIMEZONE`, `VALARM` oder HTML-Inhalte beim Roundtrip zu verlieren.
 | [Testing](Testing.md) | Fixtures, Roundtrip-Tests, Akzeptanzkriterien |
 | [Roadmap](Roadmap.md) | Entwicklungsphasen 1–6 und Status |
 | [Deployment](Deployment.md) | GitHub Pages, Actions-Workflow, Setup-Befehle |
+| [Versioning](VERSIONING.md) | Automatische SemVer-Tags und Pages-Deploy |
 
 ## Schnellstart
 
