@@ -12,7 +12,7 @@
  * re-rendered. Everything else is copied byte-for-byte.
  */
 
-import type { CalendarModel, Component, VEvent } from "../model/types.js";
+import type { CalendarModel, Component } from "../model/types.js";
 import { serializeContentLine } from "./serialize.js";
 
 export interface SerializeOptions {
