@@ -11,7 +11,7 @@ import { parseIcs } from "../parser/index.js";
 import { serializeCalendar } from "../export/index.js";
 import { buildReport, validate } from "../validate/validator.js";
 import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../model/calendar.js";
-import logoUrl from "../../assets/ICS-editor-logo.png";
+import logoUrl from "../assets/ICS-editor-appicon.png";
 
 function fmtWhen(ev: VEvent): string {
   const dt = ev.parsed.dtstart;
