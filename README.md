@@ -49,7 +49,7 @@ Das Code-Wiki liegt unter [`docs/`](docs/Home.md):
 - [Home](docs/Home.md) — Einstieg
 - [Plan](docs/Plan.md) — Architektur- und Umsetzungsplan (archiviert)
 - [Architecture](docs/Architecture.md) · [Parser](docs/Parser.md) · [Export](docs/Export-and-Validation.md)
-- [UI](docs/UI.md) · [Testing](docs/Testing.md) · [Roadmap](docs/Roadmap.md) · [Deployment](docs/Deployment.md)
+- [UI](docs/UI.md) · [Testing](docs/Testing.md) · [Roadmap](docs/Roadmap.md) · [Deployment](docs/Deployment.md) · [Versioning](docs/VERSIONING.md)
 
 GitHub-Wiki-Kompatibilität: [`docs/_Sidebar.md`](docs/_Sidebar.md) kann 1:1 in das
 GitHub-Wiki übernommen werden.
