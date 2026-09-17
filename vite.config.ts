@@ -11,23 +11,32 @@ const packageVersion = JSON.parse(readFileSync(new URL("./package.json", import.
   version?: string;
 };
 
-function resolveAppVersion(): string {
+function readGitValue(command: string): string | null {
   try {
-    return execSync("git describe --tags --always --dirty", {
+    return execSync(command, {
       cwd: new URL(".", import.meta.url),
       stdio: ["ignore", "pipe", "ignore"],
     })
       .toString()
       .trim();
   } catch {
-    return packageVersion.version ?? "0.1.0";
+    return null;
   }
+}
+
+function resolveAppVersion(): string {
+  return readGitValue("git describe --tags --abbrev=0") ?? packageVersion.version ?? "0.1.0";
+}
+
+function resolveCommitSha(): string {
+  return readGitValue("git rev-parse --short HEAD") ?? "unbekannt";
 }
 
 export default defineConfig({
   base,
   define: {
     __APP_VERSION__: JSON.stringify(resolveAppVersion()),
+    __APP_COMMIT_SHA__: JSON.stringify(resolveCommitSha()),
   },
   build: {
     target: "es2022",

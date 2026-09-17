@@ -66,6 +66,10 @@ ics-app {
   display: flex; gap: 0.4rem; align-items: center;
   min-width: 0;
 }
+.statusbar-meta {
+  display: flex; gap: 0.75rem; align-items: center;
+  flex-wrap: wrap; justify-content: flex-end;
+}
 .statusbar .file-label { color: var(--muted); }
 .statusbar .file-name { font-weight: 600; }
 .statusbar-version { white-space: nowrap; }
@@ -186,8 +190,9 @@ summary { cursor: pointer; font-weight: 600; }
     padding: 0.4rem 0.75rem;
   }
 
-  .statusbar-version {
+  .statusbar-meta {
     width: 100%;
+    justify-content: flex-start;
   }
 
   .description-input {
@@ -202,6 +207,15 @@ summary { cursor: pointer; font-weight: 600; }
 
   .toolbar .brand img {
     height: 2rem;
+  }
+
+  .statusbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .statusbar-group {
+    flex-wrap: wrap;
   }
 
   .layout {
