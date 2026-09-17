@@ -226,6 +226,6 @@ summary { cursor: pointer; font-weight: 600; }
 
   .uid-value {
     overflow-wrap: anywhere;
-    word-break: break-word;
+    word-break: break-all;
   }
 }
