@@ -209,7 +209,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     }
     const p = ev.parsed;
     editor.innerHTML = `
-      <div class="field"><label>UID (schreibgeschützt)</label><div class="readonly">${escapeHtml(p.uid)}</div></div>
+      <div class="field"><label>UID (schreibgeschützt)</label><div class="readonly uid-value">${escapeHtml(p.uid)}</div></div>
       <div class="field"><label>Titel (SUMMARY)</label><input id="e-summary" value="${escapeHtml(p.summary ?? "")}" /></div>
       <div class="row2">
         ${renderDateTimeField("dtstart", "Beginn (DTSTART)", p.dtstart)}
