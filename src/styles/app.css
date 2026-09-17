@@ -102,6 +102,11 @@ input, select, textarea {
   background: var(--bg); color: var(--text); width: 100%;
 }
 
+.description-input {
+  min-height: 16rem;
+  resize: vertical;
+}
+
 .event-row {
   display: flex; gap: 0.5rem; align-items: baseline;
   padding: 0.5rem 0.6rem; border-radius: 8px; cursor: pointer;
@@ -173,6 +178,10 @@ summary { cursor: pointer; font-weight: 600; }
     flex-wrap: wrap;
     row-gap: 0.2rem;
     padding: 0.4rem 0.75rem;
+  }
+
+  .description-input {
+    min-height: 8rem;
   }
 }
 
