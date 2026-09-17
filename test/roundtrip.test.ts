@@ -3,6 +3,7 @@ import { SAMPLE_ICS } from "./fixtures/sample.js";
 import { parseIcs } from "../src/parser/index.js";
 import { serializeCalendar } from "../src/export/index.js";
 import { setEventProperty, addEvent, deleteEvent } from "../src/model/calendar.js";
+import { encodeIcalText } from "../src/parser/text.js";
 
 function roundtrip(input: string): string {
   const model = parseIcs(input);
@@ -100,5 +101,14 @@ describe("selective editing", () => {
     expect(out).not.toContain("UID:weekly-0003@example.org");
     expect(out).toContain("UID:allday-0001@example.org");
     expect(out).toContain("UID:midnight-0002@example.org");
+  });
+
+  it("writes edited DESCRIPTION line breaks back as escaped newline sequences", () => {
+    const model = parseIcs(SAMPLE_ICS);
+    const target = model.events.find((e) => e.parsed.uid === "midnight-0002@example.org")!;
+    setEventProperty(target, "DESCRIPTION", encodeIcalText("Zeile 1\nZeile 2"));
+
+    const out = serializeCalendar(model, { eol: "\r\n", trailingNewline: true });
+    expect(out).toContain("DESCRIPTION:Zeile 1\\nZeile 2");
   });
 });

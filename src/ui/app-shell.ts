@@ -8,6 +8,7 @@
 
 import type { CalendarModel, DateTimeValue, VEvent } from "../model/types.js";
 import { parseIcs } from "../parser/index.js";
+import { encodeIcalText } from "../parser/text.js";
 import { serializeCalendar } from "../export/index.js";
 import { buildReport, validate } from "../validate/validator.js";
 import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../model/calendar.js";
@@ -237,7 +238,11 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     const on = (id: string, name: string) =>
       this.querySelector<HTMLInputElement>(id)?.addEventListener("change", (e) => {
         const value = (e.target as HTMLInputElement).value;
-        setEventProperty(ev, name, value);
+        const rawValue =
+          name === "SUMMARY" || name === "LOCATION" || name === "DESCRIPTION"
+            ? encodeIcalText(value)
+            : value;
+        setEventProperty(ev, name, rawValue);
         // keep parsed view roughly in sync for the list rendering
         if (name === "SUMMARY") ev.parsed.summary = value;
         if (name === "LOCATION") ev.parsed.location = value;

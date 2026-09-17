@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { parseContentLine } from "../src/parser/contentline.js";
 import { unfold } from "../src/parser/unfold.js";
 import { foldLine } from "../src/export/fold.js";
+import { parseIcs } from "../src/parser/index.js";
+import { encodeIcalText, decodeIcalText } from "../src/parser/text.js";
 
 describe("parseContentLine", () => {
   it("splits name, params and value", () => {
@@ -52,5 +54,30 @@ describe("foldLine", () => {
     for (let i = 1; i < folded.length; i++) {
       expect(folded[i].startsWith(" ")).toBe(true);
     }
+  });
+});
+
+describe("ical text escaping", () => {
+  it("decodes escaped newlines for DESCRIPTION in parsed events", () => {
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "BEGIN:VEVENT",
+      "UID:1@example.org",
+      "DTSTART:20261224T120000Z",
+      "DESCRIPTION:Zeile 1\\nZeile 2\\NZeile 3",
+      "END:VEVENT",
+      "END:VCALENDAR",
+      "",
+    ].join("\r\n");
+    const model = parseIcs(ics);
+    expect(model.events[0].parsed.description).toBe("Zeile 1\nZeile 2\nZeile 3");
+  });
+
+  it("encodes and decodes RFC5545 TEXT newline escapes", () => {
+    const input = "A\nB\r\nC\\D;E,F";
+    const encoded = encodeIcalText(input);
+    expect(encoded).toBe("A\\nB\\nC\\\\D\\;E\\,F");
+    expect(decodeIcalText(encoded)).toBe("A\nB\nC\\D;E,F");
   });
 });
