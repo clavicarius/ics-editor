@@ -56,13 +56,23 @@ ics-app {
 .toolbar input[type="file"] { max-width: 100%; }
 
 .statusbar {
-  display: flex; gap: 0.4rem; align-items: center;
+  display: flex; gap: 0.75rem; align-items: center;
+  justify-content: space-between;
   padding: 0.4rem 1rem; background: var(--panel);
   border-top: 1px solid var(--border);
   font-size: 0.85rem; flex-shrink: 0;
 }
+.statusbar-group {
+  display: flex; gap: 0.4rem; align-items: center;
+  min-width: 0;
+}
+.statusbar-meta {
+  display: flex; gap: 0.75rem; align-items: center;
+  flex-wrap: wrap; justify-content: flex-end;
+}
 .statusbar .file-label { color: var(--muted); }
 .statusbar .file-name { font-weight: 600; }
+.statusbar-version { white-space: nowrap; }
 
 button {
   font: inherit; padding: 0.4rem 0.8rem;
@@ -180,6 +190,11 @@ summary { cursor: pointer; font-weight: 600; }
     padding: 0.4rem 0.75rem;
   }
 
+  .statusbar-meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .description-input {
     min-height: 8rem;
   }
@@ -192,6 +207,15 @@ summary { cursor: pointer; font-weight: 600; }
 
   .toolbar .brand img {
     height: 2rem;
+  }
+
+  .statusbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .statusbar-group {
+    flex-wrap: wrap;
   }
 
   .layout {

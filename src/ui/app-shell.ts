@@ -15,6 +15,9 @@ import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../
 import { icalToPickerValue, pickerToIcal } from "./datetime.js";
 import logoUrl from "../assets/ICS-editor-logo.png";
 
+const appVersion = __APP_VERSION__;
+const appCommitSha = __APP_COMMIT_SHA__;
+
 function fmtWhen(ev: VEvent): string {
   const dt = ev.parsed.dtstart;
   if (!dt) return "—";
@@ -137,8 +140,20 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
           : `<div class="empty">Öffne eine <code>.ics</code>-Datei, um zu starten. Alles bleibt lokal im Browser.</div>`
       }
       <footer class="statusbar">
-        <span class="file-label">Datei:</span>
-        <span class="file-name">${hasModel ? escapeHtml(this.fileName) : "Keine Datei geöffnet"}</span>
+        <div class="statusbar-group">
+          <span class="file-label">Datei:</span>
+          <span class="file-name">${hasModel ? escapeHtml(this.fileName) : "Keine Datei geöffnet"}</span>
+        </div>
+        <div class="statusbar-meta">
+          <div class="statusbar-group statusbar-version">
+            <span class="file-label">Version:</span>
+            <span>${escapeHtml(appVersion)}</span>
+          </div>
+          <div class="statusbar-group statusbar-version">
+            <span class="file-label">Commit:</span>
+            <span><code>${escapeHtml(appCommitSha)}</code></span>
+          </div>
+        </div>
       </footer>
     `;
 
