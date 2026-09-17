@@ -8,6 +8,9 @@ const base = process.env.VITE_BASE ?? "/ics-editor/";
 
 export default defineConfig({
   base,
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? "0.1.0"),
+  },
   build: {
     target: "es2022",
     outDir: "dist",
