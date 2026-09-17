@@ -29,7 +29,7 @@ function resolveAppVersion(): string {
 }
 
 function resolveCommitSha(): string {
-  return readGitValue("git rev-parse --short HEAD") ?? "unbekannt";
+  return readGitValue("git rev-parse --short HEAD") ?? "unknown";
 }
 
 export default defineConfig({
