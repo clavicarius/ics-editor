@@ -13,6 +13,7 @@ import type {
   VEvent,
   ContentLine,
 } from "../model/types.js";
+import { decodeIcalText } from "./text.js";
 
 function firstParam(line: ContentLine, key: string): string | undefined {
   return line.parameters[key]?.[0];
@@ -45,13 +46,13 @@ export function parseVEvent(component: Component): VEvent {
         parsed.uid = p.value;
         break;
       case "SUMMARY":
-        parsed.summary = p.value;
+        parsed.summary = decodeIcalText(p.value);
         break;
       case "DESCRIPTION":
-        parsed.description = p.value;
+        parsed.description = decodeIcalText(p.value);
         break;
       case "LOCATION":
-        parsed.location = p.value;
+        parsed.location = decodeIcalText(p.value);
         break;
       case "STATUS":
         parsed.status = p.value;
