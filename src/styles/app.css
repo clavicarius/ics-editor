@@ -223,4 +223,9 @@ summary { cursor: pointer; font-weight: 600; }
   .row2 {
     grid-template-columns: 1fr;
   }
+
+  .uid-value {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
