@@ -216,7 +216,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
         ${renderDateTimeField("dtend", "Ende (DTEND)", p.dtend)}
       </div>
       <div class="field"><label>Ort (LOCATION)</label><input id="e-location" value="${escapeHtml(p.location ?? "")}" /></div>
-      <div class="field"><label>Beschreibung (DESCRIPTION)</label><textarea id="e-description" rows="4">${escapeHtml(p.description ?? "")}</textarea></div>
+      <div class="field"><label>Beschreibung (DESCRIPTION)</label><textarea id="e-description" class="description-input" rows="4">${escapeHtml(p.description ?? "")}</textarea></div>
 
       <details ${p.rrule.length ? "open" : ""}>
         <summary>Wiederholung / Ausnahmen</summary>
