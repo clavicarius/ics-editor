@@ -25,7 +25,7 @@ function readGitValue(command: string): string | null {
 }
 
 function resolveAppVersion(): string {
-  return readGitValue("git describe --tags --abbrev=0") ?? packageVersion.version ?? "0.1.0";
+  return readGitValue("git describe --tags --exact-match") ?? packageVersion.version ?? "0.1.0";
 }
 
 function resolveCommitSha(): string {
