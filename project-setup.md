@@ -22,8 +22,8 @@ npm run build     # Produktionsbuild nach dist/
 git init
 git branch -M main
 git add .
-git commit -m "Initiales Grundgerüst: verlustarmer ICS-Editor (Parser, Raw/Patch-Export, UI, Tests)"
-git remote add origin https://github.com/clavicarius/ics-editor.git
+git commit -m "Initiales Grundgerüst: Keepical — verlustarmer ICS-Editor (Parser, Raw/Patch-Export, UI, Tests)"
+git remote add origin https://github.com/clavicarius/keepical.git
 git push -u origin main
 ```
 
@@ -33,35 +33,35 @@ Die folgenden Befehle erstellen ein Issue pro Entwicklungsphase. Voraussetzung:
 `gh auth login` ist erledigt.
 
 ```bash
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 1: Parser (verlustarm)" \
   -l "phase-1,parser" \
   -b "Datei einlesen, Zeilen entfalten (unfold), Komponentenbaum (BEGIN/END), VEVENT interpretieren. Originalzeilen (rawLines) je Komponente/Property erhalten. Unbekannte Properties und Komponenten unverändert speichern. Dateien: src/parser/*."
 
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 2: Read-only-UI + verlustfreier Roundtrip" \
   -l "phase-2,milestone" \
   -b "Kalender laden, Termine anzeigen, Details anzeigen. Kernmeilenstein: Import -> sofortiger Export ist byte-identisch. Abgedeckt durch test/roundtrip.test.ts (u. a. VALUE=DATE, TZID, VALARM, X-ALT-DESC, X-MICROSOFT-*)."
 
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 3: Bearbeitung (Titel/Datum/Ort/Beschreibung, Neu, Löschen)" \
   -l "phase-3,editor" \
-  -b "Standardfelder bearbeiten mit selektivem Patch-Export (nur geänderte Properties neu schreiben). Neue Termine mit konfigurierbarem UID-Suffix (@ics-editor.local). Löschen entfernt nur den betroffenen VEVENT-Block. UID standardmäßig read-only."
+  -b "Standardfelder bearbeiten mit selektivem Patch-Export (nur geänderte Properties neu schreiben). Neue Termine mit konfigurierbarem UID-Suffix (@keepical.local). Löschen entfernt nur den betroffenen VEVENT-Block. UID standardmäßig read-only."
 
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 4: Wiederholungen (RRULE/RDATE/EXDATE/RECURRENCE-ID)" \
   -l "phase-4,recurrence" \
   -b "RRULE-Baustein-UI (FREQ, INTERVAL, COUNT/UNTIL, BYDAY, BYMONTHDAY, BYSETPOS) plus immer sichtbarer Rohtext. Nicht verstandene Teile nicht stillschweigend löschen: erhalten / roh bearbeiten / abbrechen. Einzelne Instanz vs. Serie via RECURRENCE-ID."
 
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 5: Validierung + Exportbericht + Vorher/Nachher-Diff" \
   -l "phase-5,validation" \
   -b "Strukturprüfungen (genau ein VCALENDAR, UID/DTSTART vorhanden, nicht DTEND+DURATION, TZID-Konsistenz, gültige RRULE/RDATE/EXDATE, CRLF/Folding). Exportbericht und Diff pro UID. Basis in src/validate/validator.ts."
 
-gh issue create -R clavicarius/ics-editor \
+gh issue create -R clavicarius/keepical \
   -t "Phase 6: Deployment auf GitHub Pages + Doku + Beispielkalender" \
   -l "phase-6,deployment" \
-  -b "GitHub-Actions-Workflow (siehe .github/workflows/deploy.yml unten), Pages aktivieren (Source: GitHub Actions), vite base=/ics-editor/. Beispielkalender ohne personenbezogene Daten. iOS-Abo-Praxistest."
+  -b "GitHub-Actions-Workflow (siehe .github/workflows/deploy.yml unten), Pages aktivieren (Source: GitHub Actions), vite base=/keepical/. Beispielkalender ohne personenbezogene Daten. iOS-Abo-Praxistest."
 ```
 
 ## 4. GitHub-Actions-Workflow für Pages
@@ -118,5 +118,4 @@ jobs:
 ```
 
 Danach unter GitHub → Settings → Pages die Source auf "GitHub Actions" stellen.
-Die Seite ist dann unter `https://clavicarius.github.io/ics-editor/` erreichbar.
-
+Die Seite ist dann unter `https://clavicarius.github.io/keepical/` erreichbar.
