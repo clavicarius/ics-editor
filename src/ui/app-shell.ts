@@ -208,9 +208,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
         const recurring = ev.parsed.rrule.length > 0 ? "↻" : "";
         const alarm = ev.component.children.some((c) => c.kind === "VALARM") ? "⏰" : "";
         const idx = this.model!.events.indexOf(ev);
+        const summaryLabel = ev.parsed.summary ?? "(ohne Titel)";
         return `<div class="event-row ${changed ? "changed" : ""} ${ev === this.selected ? "selected" : ""}" data-idx="${idx}" data-i="${i}">
           <span class="when">${fmtWhen(ev)}</span>
-          <span class="title">${escapeHtml(ev.parsed.summary ?? "(ohne Titel)")}</span>
+          <span class="title" title="${escapeHtml(summaryLabel)}">${escapeHtml(summaryLabel)}</span>
           <span class="badges">${recurring} ${alarm} ${changed ? "•" : ""}</span>
         </div>`;
       })
@@ -287,10 +288,14 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
 
     this.querySelector("#e-delete")?.addEventListener("click", () => {
       if (confirm("Diesen Termin löschen? Andere Termine bleiben unverändert.")) {
+        const visible = this.visibleEvents();
+        const i = visible.indexOf(ev);
         deleteEvent(ev);
-        this.selected = null;
+        const remaining = this.visibleEvents();
+        this.selected = remaining[i] ?? remaining[i - 1] ?? null;
         this.renderList();
         this.renderEditor();
+        this.ensureSelectionVisible();
       }
     });
   }
