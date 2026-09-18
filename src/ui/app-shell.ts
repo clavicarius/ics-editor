@@ -114,7 +114,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  changed: ${d.changed.join(", ")}`).join("
       <div class="toolbar">
         <div class="brand">
           <img src="${logoUrl}" alt="" width="32" height="32" />
-          <h1>Keepical <small style="color:var(--muted)">Change only what you want.</small></h1>
+          <h1>Keepical <small style="color:var(--muted)">Edit what matters. Keep the rest.</small></h1>
         </div>
         <input type="file" id="file" accept=".ics,text/calendar" />
         <button id="add" ${hasModel ? "" : "disabled"}>+ Event</button>

@@ -1,4 +1,4 @@
-# Keepical — Change only what you want.
+# Keepical — Edit what matters. Keep the rest.
 
 ![logo](./src/assets/keepical-applogo.png)
 
@@ -20,12 +20,12 @@ Instead, every component is stored twice — as **original lines** (`rawLines`) 
 | Display | Keepical |
 | Slug | `keepical` |
 | Pronunciation | KEEP-ih-cal |
-| Tagline | Change only what you want. |
+| Tagline | Edit what matters. Keep the rest. |
 
 Keepical combines keep and iCal: the app edits `.ics` files while preserving as much
 of the original as possible — untouched events, properties, and structure stay in
 place instead of being reserialized. The name expresses exactly that promise:
-change what is necessary and keep the rest.
+edit what matters and keep the rest.
 
 Short version: Keepical = keep + iCal. Edit without rewriting the calendar
 unnecessarily.
