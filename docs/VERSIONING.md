@@ -8,9 +8,15 @@ Keepical verwendet automatisches Semantic Versioning über
 The workflow runs on every push to `main`. It also runs for pull requests
 targeting `main`, but pull-request runs are always dry runs.
 
-After a successful versioning run for `main`, the full version tag triggers
-the GitHub Pages workflow, which builds and deploys that exact tagged commit.
-Manual Pages deployments remain available through `workflow_dispatch`.
+After a successful versioning run for `main`, the workflow publishes the full
+version tag and then **calls** the GitHub Pages workflow via `workflow_call`
+(with `version-tag` set to that tag). This avoids relying on a `GITHUB_TOKEN`
+tag push to start another workflow — those pushes do not trigger `on.push.tags`
+listeners.
+
+Manual Pages deployments remain available through `workflow_dispatch` on
+`.github/workflows/deploy.yml`. External or manually created `v*.*.*` tags can
+still trigger deploy directly via `on.push.tags`.
 
 ## Tags and increments
 
@@ -31,7 +37,10 @@ previous semantic version, even when version lines or tags have gaps.
 - Branch and actor guards prevent tag operations from recursively triggering
   versioning. Tag pushes do not match the `main` branch trigger.
 - Before publishing, the workflow checks whether the computed full tag already
-  exists on `origin`. If it does, no duplicate full tag is created.
+  exists on `origin`. If it does, no duplicate full tag is created and no
+  deploy is invoked.
+- Pages deploy after versioning runs only when a **new** tag was published
+  (`published == true`).
 
 ## Operational examples
 
