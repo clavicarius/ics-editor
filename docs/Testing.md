@@ -16,7 +16,7 @@ Git-`autocrlf` garantiert sind. Enthält: `VALUE=DATE`, `TZID=Europe/Berlin` mit
 - Alle UIDs stabil; VALUE=DATE, TZID, gefaltetes X-ALT-DESC, X-MICROSOFT-*, jeder
   VALARM bleiben erhalten; Mitternachtstermin behält lokale Zeiten.
 - Selektives Editieren: nur SUMMARY ändern lässt alles andere unverändert.
-- Neuer Termin erhält frische UID (`@ics-editor.local`); Löschen berührt keinen
+- Neuer Termin erhält frische UID (`@keepical.local`); Löschen berührt keinen
   anderen Termin.
 
 ## Parser-Unit-Tests — `test/parser.test.ts`

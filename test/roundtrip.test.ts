@@ -88,7 +88,7 @@ describe("selective editing", () => {
     const before = model.events.length;
     const ev = addEvent(model, { summary: "Neu", dtstart: "20260201T100000", tzid: "Europe/Berlin" });
     expect(model.events.length).toBe(before + 1);
-    expect(ev.parsed.uid).toMatch(/@ics-editor\.local$/);
+    expect(ev.parsed.uid).toMatch(/@keepical\.local$/);
     const out = serializeCalendar(model, { eol: "\r\n", trailingNewline: true });
     expect(out).toContain("SUMMARY:Neu");
   });
