@@ -7,12 +7,12 @@ Phase 4 kommt.
 
 | Phase | Thema | Status |
 | --- | --- | --- |
-| 1 | Parser (unfold, contentline, tree, vevent) mit rawLines-Erhaltung | erledigt (Grundgerüst) |
-| 2 | Read-only-UI + verlustfreier Import/Export-Roundtrip, Tests | in Arbeit |
-| 3 | Bearbeiten / Neu / Löschen mit Patch-Export | in Arbeit (MVP vorhanden) |
+| 1 | Parser (unfold, contentline, tree, vevent) mit rawLines-Erhaltung | erledigt |
+| 2 | Read-only-UI + verlustfreier Import/Export-Roundtrip, Tests | erledigt |
+| 3 | Bearbeiten / Neu / Löschen mit Patch-Export | erledigt (MVP) |
 | 4 | RRULE / RDATE / EXDATE / RECURRENCE-ID inkl. Rohtext-Fallback | offen |
-| 5 | Validierung + Exportbericht + Vorher/Nachher-Diff | in Arbeit (Basis vorhanden) |
-| 6 | GitHub Pages + Beispielkalender + Doku | in Arbeit (Wiki vorhanden) |
+| 5 | Validierung + Exportbericht + Vorher/Nachher-Diff | teilweise (Basis vorhanden) |
+| 6 | GitHub Pages + Beispielkalender + Doku | erledigt |
 
 ## Phase 1 — Parser
 
