@@ -66,13 +66,13 @@ jobs:
           version_tag="$(git tag --points-at "$GITHUB_SHA" --list 'v*.*.*' | sort -V | tail -n1)"
           echo "VITE_VERSION_TAG=${version_tag:-development}" >> "$GITHUB_ENV"
       - run: npm run build
-      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+      - if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     permissions:
