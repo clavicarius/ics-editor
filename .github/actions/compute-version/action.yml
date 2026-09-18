@@ -12,9 +12,6 @@ outputs:
   next-tag:
     description: Next semantic version tag
     value: ${{ steps.compute.outputs.next-tag }}
-  major-tag:
-    description: Moving major tag for the next version
-    value: ${{ steps.compute.outputs.major-tag }}
   tag-exists:
     description: Whether the computed version tag already exists remotely
     value: ${{ steps.compute.outputs.tag-exists }}
@@ -64,7 +61,6 @@ runs:
           next_tag="v${major}.${minor}.${patch}"
         fi
 
-        major_tag="${next_tag%%.*}"
         tag_exists=false
         if git ls-remote --exit-code --tags --refs "$REMOTE" "refs/tags/$next_tag" >/dev/null 2>&1; then
           tag_exists=true
@@ -73,6 +69,5 @@ runs:
         {
           echo "latest-tag=$latest_tag"
           echo "next-tag=$next_tag"
-          echo "major-tag=$major_tag"
           echo "tag-exists=$tag_exists"
         } >> "$GITHUB_OUTPUT"
