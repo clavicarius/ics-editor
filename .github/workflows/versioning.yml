@@ -24,6 +24,9 @@ jobs:
       github.ref == 'refs/heads/main' &&
       github.actor != 'github-actions[bot]')
     runs-on: ubuntu-latest
+    outputs:
+      next-tag: ${{ steps.version.outputs.next-tag }}
+      published: ${{ steps.publish.outputs.published || 'false' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +49,7 @@ jobs:
           echo "Version tag already exists: $TAG_EXISTS"
 
       - name: Create and push version tag
+        id: publish
         if: >-
           github.event_name == 'push' &&
           github.ref == 'refs/heads/main' &&
@@ -57,6 +61,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag "$NEXT_TAG" "$GITHUB_SHA"
           git push origin "refs/tags/$NEXT_TAG"
+          echo "published=true" >> "$GITHUB_OUTPUT"
 
       - name: Report idempotent result
         if: >-
@@ -64,3 +69,18 @@ jobs:
           github.ref == 'refs/heads/main' &&
           steps.version.outputs.tag-exists == 'true'
         run: echo "Version tag ${{ steps.version.outputs.next-tag }} already exists."
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    needs: version
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.version.outputs.published == 'true'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      version-tag: ${{ needs.version.outputs.next-tag }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
