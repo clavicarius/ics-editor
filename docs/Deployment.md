@@ -35,6 +35,11 @@ Der Deploy-Workflow baut, führt Tests aus und deployt `dist/` über
 Deploy-Trigger auf `push` zu `main` (vermeidet Builds mit Fallback-Version
 `development` vor dem Tag).
 
+Upload und Deploy sind für alle Einstiege des Workflows **ohne**
+`github.event_name`-Guards: Bei `workflow_call` erbt der Reusable Workflow den
+Caller-Context (`push` / `refs/heads/main`), daher würde eine Prüfung auf
+`workflow_call` oder Tag-Refs Upload/Deploy fälschlich überspringen.
+
 Job-Concurrency für Pages bleibt im Deploy-Job (`group: pages`); ein
 top-level-`concurrency: pages` wird bewusst **nicht** gesetzt (Deadlock mit dem
 Deploy-Job, siehe PR #10).
