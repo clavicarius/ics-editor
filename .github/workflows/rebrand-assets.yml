@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: rebrand-assets
+  cancel-in-progress: true
+
 jobs:
   rename-and-verify:
     runs-on: ubuntu-latest
@@ -32,25 +36,24 @@ jobs:
             changed=1
           fi
 
-          node <<'NODE'
-          const fs = require("fs");
-          const p = JSON.parse(fs.readFileSync("package-lock.json", "utf8"));
-          let dirty = false;
-          if (p.name !== "keepical") { p.name = "keepical"; dirty = true; }
-          if (p.packages?.[""] && p.packages[""].name !== "keepical") {
-            p.packages[""].name = "keepical";
-            dirty = true;
-          }
-          if (dirty) {
-            fs.writeFileSync("package-lock.json", JSON.stringify(p, null, 2) + "\n");
-            process.exit(2);
-          }
-          NODE
-          lock_status=$?
-          if [ "$lock_status" -eq 2 ]; then
+          lock_updated="$(node -e '
+            const fs = require("fs");
+            const p = JSON.parse(fs.readFileSync("package-lock.json", "utf8"));
+            let dirty = false;
+            if (p.name !== "keepical") { p.name = "keepical"; dirty = true; }
+            if (p.packages?.[""] && p.packages[""].name !== "keepical") {
+              p.packages[""].name = "keepical";
+              dirty = true;
+            }
+            if (dirty) {
+              fs.writeFileSync("package-lock.json", JSON.stringify(p, null, 2) + "\n");
+              process.stdout.write("1");
+            } else {
+              process.stdout.write("0");
+            }
+          ')"
+          if [ "$lock_updated" = "1" ]; then
             changed=1
-          elif [ "$lock_status" -ne 0 ]; then
-            exit "$lock_status"
           fi
 
           if [ "$changed" -eq 1 ]; then
