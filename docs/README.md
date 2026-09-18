@@ -1,4 +1,4 @@
-# ICS-Editor Dokumentation
+# Keepical Dokumentation
 
 Einstieg: **[Home](Home.md)**
 

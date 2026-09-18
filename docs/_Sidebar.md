@@ -1,4 +1,4 @@
-### ICS-Editor Wiki
+### Keepical Wiki
 
 - [Home](Home.md)
 - [Plan](Plan.md)

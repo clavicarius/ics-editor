@@ -1,4 +1,4 @@
-# Verlustarmer ICS-Editor — Architektur- und Umsetzungsplan
+# Verlustarmer ICS-Editor (Keepical) — Architektur- und Umsetzungsplan
 
 _Archivierte Planfassung. Die laufende Doku steht im Wiki: [Home](Home.md)._
 
@@ -17,12 +17,12 @@ betroffene Properties patchen**. ICAL.js wird höchstens als optionale Rechenhil
 - CSS ohne Präprozessor
 - File System Access API mit `FileReader`-Fallback; Download via Blob
 - Ziel-Hosting: GitHub Pages (statisch, `base` in Vite konfiguriert)
-- UID-Default-Suffix: `@ics-editor.local`, im UI konfigurierbar
+- UID-Default-Suffix: `@keepical.local`, im UI konfigurierbar
 
 ## Projektstruktur
 
 ```text
-ics-editor/
+keepical/
 ├── index.html
 ├── package.json
 ├── tsconfig.json
@@ -69,7 +69,7 @@ Siehe [UI](UI.md). Geplant: `event-list`, `event-editor`, `rrule-editor`,
 ## Verhalten bei Terminen
 
 - Bestehend: UID unverändert; unbearbeitete/unbekannte Properties und Alarme bleiben.
-- Neu: `UID:<uuid>@ics-editor.local`, Mindestfelder UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
+- Neu: `UID:<uuid>@keepical.local`, Mindestfelder UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
 - Gelöscht: kompletter VEVENT-Block entfernt, sonst nichts.
 
 ## Teststrategie
