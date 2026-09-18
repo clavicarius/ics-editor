@@ -16,78 +16,33 @@ npm run build    # erzeugt dist/
 
 ## GitHub Pages
 
-1. Workflow-Datei `.github/workflows/deploy.yml` anlegen (siehe unten).
+1. Workflow-Datei `.github/workflows/deploy.yml` (Source of Truth).
 2. Unter GitHub -> Settings -> Pages die Source auf **GitHub Actions** stellen.
 3. Die Seite ist dann unter `https://clavicarius.github.io/keepical/` erreichbar.
 
-Der Workflow startet bei vollständigen Version-Tags `v*.*.*` (gesetzt durch
-[Versioning](VERSIONING.md)) sowie manuell über `workflow_dispatch`. Er baut,
-führt Tests aus und deployt `dist/` über `actions/upload-pages-artifact` +
-`actions/deploy-pages`. Moving-Major-Tags (`v0`, `v1`, …) lösen kein Deploy aus.
+### Wann deployt wird
 
-```yaml
-name: Build and Deploy to GitHub Pages
+- **Nach Merge auf `main`:** [Versioning](VERSIONING.md) erzeugt einen
+  Full-Tag `v*.*.*` und ruft danach `deploy.yml` per `workflow_call` auf
+  (mit Input `version-tag`). So startet der Deploy auch, wenn der Tag-Push mit
+  `GITHUB_TOKEN` keine eigenen Workflows auslöst.
+- **Manuell:** `workflow_dispatch` auf dem Deploy-Workflow.
+- **Tag-Push von außerhalb:** `on.push.tags: v*.*.*` (z. B. manuell erzeugte
+  Tags mit einem User-Token).
 
-on:
-  push:
-    tags:
-      - "v*.*.*"
-  workflow_dispatch:
+Der Deploy-Workflow baut, führt Tests aus und deployt `dist/` über
+`actions/upload-pages-artifact` + `actions/deploy-pages`. Es gibt **keinen**
+Deploy-Trigger auf `push` zu `main` (vermeidet Builds mit Fallback-Version
+`development` vor dem Tag).
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+Job-Concurrency für Pages bleibt im Deploy-Job (`group: pages`); ein
+top-level-`concurrency: pages` wird bewusst **nicht** gesetzt (Deadlock mit dem
+Deploy-Job, siehe PR #10).
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
+Aktuelle Workflow-Definition:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    concurrency:
-      group: ci-${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm test
-      - name: Set version from Git tag
-        run: |
-          version_tag="$(git tag --points-at "$GITHUB_SHA" --list 'v*.*.*' | sort -V | tail -n1)"
-          echo "VITE_VERSION_TAG=${version_tag:-development}" >> "$GITHUB_ENV"
-      - run: npm run build
-      - if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
-```
+- [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
+- [`.github/workflows/versioning.yml`](../.github/workflows/versioning.yml)
 
 ## Git und Issues
 
@@ -95,7 +50,7 @@ Phasen-Issues liegen im GitHub-Repository. Siehe [Roadmap](Roadmap.md).
 
 ## Datenschutz
 
-Die App arbeitet vollständig clientseitig: keine Uploads, kein Backend, kein Tracking. 
+Die App arbeitet vollständig clientseitig: keine Uploads, kein Backend, kein Tracking.
 Dateien werden über FileReader / File System Access API gelesen und als Download exportiert.
 
 Zurück zur [Home](Home.md).
