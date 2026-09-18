@@ -1,6 +1,6 @@
 # Versioning
 
-Der ICS-Editor verwendet automatisches Semantic Versioning über
+Keepical verwendet automatisches Semantic Versioning über
 `.github/workflows/versioning.yml`.
 
 ## Trigger behavior

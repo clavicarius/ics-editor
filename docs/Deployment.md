@@ -1,7 +1,7 @@
 # Deployment
 
 Statische Veröffentlichung auf GitHub Pages. Der Vite-`base`-Pfad ist
-`/ics-editor/` (`vite.config.ts`); Override über `VITE_BASE`.
+`/keepical/` (`vite.config.ts`); Override über `VITE_BASE`.
 
 ## Lokale Befehle
 
@@ -18,7 +18,7 @@ npm run build    # erzeugt dist/
 
 1. Workflow-Datei `.github/workflows/deploy.yml` anlegen (siehe unten).
 2. Unter GitHub -> Settings -> Pages die Source auf **GitHub Actions** stellen.
-3. Die Seite ist dann unter `https://clavicarius.github.io/ics-editor/` erreichbar.
+3. Die Seite ist dann unter `https://clavicarius.github.io/keepical/` erreichbar.
 
 Der Workflow startet bei vollständigen Version-Tags `v*.*.*` (gesetzt durch
 [Versioning](VERSIONING.md)) sowie manuell über `workflow_dispatch`. Er baut,

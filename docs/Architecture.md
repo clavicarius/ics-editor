@@ -53,7 +53,7 @@ Der `CalendarModel` (`src/model/types.ts`) hält den `VCALENDAR`-Baum, einen Ind
 der editierbaren Events sowie die beim Import erkannte Zeilenendung
 (`originalEol`) und ob die Datei mit einem Zeilenumbruch endete.
 
-Die Invariante, die den Editor verlustarm macht: **Ist eine Komponente nicht
+Die Invariante, die Keepical verlustarm macht: **Ist eine Komponente nicht
 `dirty`, wird sie aus `rawLines` unverändert serialisiert.**
 
 ## Datenfluss
@@ -98,7 +98,7 @@ Siehe `src/model/calendar.ts`.
 
 - **Bestehend:** UID unverändert; DTSTAMP nach Regel; LAST-MODIFIED aktualisierbar;
   SEQUENCE erhöhbar; unbearbeitete/unbekannte Properties und Alarme bleiben.
-- **Neu:** `UID:<uuid>@ics-editor.local` (Suffix konfigurierbar über
+- **Neu:** `UID:<uuid>@keepical.local` (Suffix konfigurierbar über
   `DEFAULT_UID_SUFFIX`), Mindestfelder UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
 - **Gelöscht:** kompletter `VEVENT`-Block entfernt, sonst nichts.
 

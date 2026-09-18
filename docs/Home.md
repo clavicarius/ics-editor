@@ -1,7 +1,7 @@
-# ICS-Editor — Wiki
+# Keepical — Wiki
 
-Willkommen im Code-Wiki des **verlustarmen ICS-Editors**: einer statischen,
-rein clientseitigen Web-App zum Bearbeiten von `.ics`-Dateien, ohne unbekannte
+Willkommen im Code-Wiki von **Keepical**: einer statischen,
+rein clientseitigen Web-App zum verlustarmen Bearbeiten von `.ics`-Dateien, ohne unbekannte
 Properties, `VTIMEZONE`, `VALARM` oder HTML-Inhalte beim Roundtrip zu verlieren.
 
 > **Kernversprechen:** Wird an einem Termin nur der Titel geändert, bleiben alle

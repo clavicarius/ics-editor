@@ -23,7 +23,7 @@ export interface NewEventInput {
 }
 
 /** Configurable suffix for generated UIDs (see project rules). */
-export const DEFAULT_UID_SUFFIX = "ics-editor.local";
+export const DEFAULT_UID_SUFFIX = "keepical.local";
 
 /** RFC 4122 v4 UID using the platform crypto when available. */
 export function generateUid(suffix: string = DEFAULT_UID_SUFFIX): string {

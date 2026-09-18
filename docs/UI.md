@@ -1,7 +1,7 @@
 # UI
 
 Die Oberfläche ist framework-frei mit nativen Web Components umgesetzt. Aktuell
-liegt die gesamte MVP-Interaktivität in einer Komponente `ics-app`
+liegt die gesamte MVP-Interaktivität in einer Komponente `keepical-app`
 (`src/ui/app-shell.ts`), registriert über `src/main.ts`. Styles in
 `src/styles/app.css` (inkl. Dark-Mode über `prefers-color-scheme`).
 
@@ -9,7 +9,7 @@ liegt die gesamte MVP-Interaktivität in einer Komponente `ics-app`
 
 ```mermaid
 flowchart TD
-  App["ics-app (app-shell.ts)"] --> Toolbar["Toolbar: Öffnen / + Termin / Export"]
+  App["keepical-app (app-shell.ts)"] --> Toolbar["Toolbar: Öffnen / + Termin / Export"]
   App --> List["Terminliste + Filter"]
   App --> Editor["Bearbeitungsmaske"]
   App --> Report["Exportbericht"]
@@ -34,7 +34,7 @@ setzt — Basis für den selektiven Patch-Export.
 ## Neu / Löschen
 
 `+ Termin` erzeugt über `addEvent()` einen standardkonformen `VEVENT` mit neuer UID
-(`@ics-editor.local`). Löschen markiert den Termin (`deleteEvent()`); beim Export
+(`@keepical.local`). Löschen markiert den Termin (`deleteEvent()`); beim Export
 verschwindet nur dessen Block.
 
 ## Export

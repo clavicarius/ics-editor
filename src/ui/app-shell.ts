@@ -13,7 +13,7 @@ import { serializeCalendar } from "../export/index.js";
 import { buildReport, validate } from "../validate/validator.js";
 import { addEvent, deleteEvent, setEventProperty, DEFAULT_UID_SUFFIX } from "../model/calendar.js";
 import { icalToPickerValue, pickerToIcal } from "./datetime.js";
-import logoUrl from "../assets/ICS-editor-logo.png";
+import logoUrl from "../assets/keepical-logo.png";
 
 const appVersion = __APP_VERSION__;
 const appCommitSha = __APP_COMMIT_SHA__;
@@ -114,7 +114,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
       <div class="toolbar">
         <div class="brand">
           <img src="${logoUrl}" alt="" width="32" height="32" />
-          <h1>ICS-Editor <small style="color:var(--muted)">verlustarm &amp; lokal</small></h1>
+          <h1>Keepical <small style="color:var(--muted)">Nur ändern, was du willst.</small></h1>
         </div>
         <input type="file" id="file" accept=".ics,text/calendar" />
         <button id="add" ${hasModel ? "" : "disabled"}>+ Termin</button>
@@ -344,4 +344,4 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-customElements.define("ics-app", AppShell);
+customElements.define("keepical-app", AppShell);

@@ -27,7 +27,7 @@ byte-identisch.** Abgedeckt durch `test/roundtrip.test.ts`. Siehe [Testing](Test
 ## Phase 3 — Bearbeitung
 
 Standardfelder bearbeiten mit selektivem Patch-Export. Neue Termine mit
-konfigurierbarem UID-Suffix (`@ics-editor.local`). Löschen entfernt nur den
+konfigurierbarem UID-Suffix (`@keepical.local`). Löschen entfernt nur den
 betroffenen VEVENT-Block. UID standardmäßig read-only.
 
 ## Phase 4 — Wiederholungen
@@ -44,6 +44,6 @@ Strukturprüfungen, Exportbericht und Diff pro UID. Basis in
 
 ## Phase 6 — Deployment
 
-GitHub-Actions-Workflow, Pages aktivieren, `vite` `base=/ics-editor/`.
+GitHub-Actions-Workflow, Pages aktivieren, `vite` `base=/keepical/`.
 Beispielkalender ohne personenbezogene Daten. iOS-Abo-Praxistest.
 Siehe [Deployment](Deployment.md).
