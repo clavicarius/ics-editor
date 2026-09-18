@@ -33,8 +33,7 @@ npm run build    # erzeugt dist/
 Der Deploy-Workflow baut, führt Tests aus und deployt `dist/` über
 `actions/upload-pages-artifact` + `actions/deploy-pages`. Es gibt **keinen**
 Deploy-Trigger auf `push` zu `main` (vermeidet Builds mit Fallback-Version
-`development` vor dem Tag). Moving-Major-Tags (`v0`, `v1`, …) lösen kein Deploy
-aus.
+`development` vor dem Tag).
 
 Job-Concurrency für Pages bleibt im Deploy-Job (`group: pages`); ein
 top-level-`concurrency: pages` wird bewusst **nicht** gesetzt (Deadlock mit dem
