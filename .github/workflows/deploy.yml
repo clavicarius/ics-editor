@@ -46,13 +46,14 @@ jobs:
           fi
           echo "VITE_VERSION_TAG=${version_tag:-development}" >> "$GITHUB_ENV"
       - run: npm run build
-      - if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-pages-artifact@v3
+      # Always upload: triggers are only tags, workflow_dispatch, or workflow_call.
+      # Do not gate on github.event_name == 'workflow_call' — reusable workflows
+      # inherit the caller's event (e.g. push to main), so that check never matches.
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     permissions:
