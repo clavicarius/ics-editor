@@ -1,72 +1,73 @@
-# Projekt-Setup, GitHub-Issues und Deployment
+# Project setup, GitHub issues, and deployment
 
-Die fachliche Doku und der Plan stehen im Code-Wiki unter [`docs/`](docs/Home.md).
-Dieses Dokument enthält nur die manuellen Schritte, die in dieser Umgebung nicht
-automatisch ausgeführt werden konnten (die Sandbox blockiert Terminal-Befehle wie
-`git`, `gh`, `npm`). Alle Quelldateien wurden bereits angelegt.
+The product documentation and plan live in the code wiki under [`docs/`](docs/Home.md).
+This document only contains the manual steps that could not be executed automatically
+in this environment (the sandbox blocks terminal commands such as `git`, `gh`, and
+`npm`). All source files have already been created.
 
-## 1. Abhängigkeiten installieren und Tests ausführen
+## 1. Install dependencies and run tests
 
-Die folgenden Befehle gelten relativ zum Projektwurzelverzeichnis (dort, wo `package.json` liegt).
+The following commands are relative to the project root directory (where
+`package.json` is located).
 
 ```bash
 npm install
-npm test          # Roundtrip- und Parser-Tests
-npm run dev       # lokaler Dev-Server
-npm run build     # Produktionsbuild nach dist/
+npm test          # Roundtrip and parser tests
+npm run dev       # Local dev server
+npm run build     # Production build to dist/
 ```
 
-## 2. Git initialisieren und zum Repository pushen
+## 2. Initialize Git and push to the repository
 
 ```bash
 git init
 git branch -M main
 git add .
-git commit -m "Initiales Grundgerüst: Keepical — verlustarmer ICS-Editor (Parser, Raw/Patch-Export, UI, Tests)"
+git commit -m "Initial scaffold: Keepical — loss-minimizing ICS editor (parser, raw/patch export, UI, tests)"
 git remote add origin https://github.com/clavicarius/keepical.git
 git push -u origin main
 ```
 
-## 3. GitHub-Issues anlegen (via gh CLI)
+## 3. Create GitHub issues (via gh CLI)
 
-Die folgenden Befehle erstellen ein Issue pro Entwicklungsphase. Voraussetzung:
-`gh auth login` ist erledigt.
+The following commands create one issue per development phase. Prerequisite:
+`gh auth login` has been completed.
 
 ```bash
 gh issue create -R clavicarius/keepical \
-  -t "Phase 1: Parser (verlustarm)" \
+  -t "Phase 1: Parser (loss-minimizing)" \
   -l "phase-1,parser" \
-  -b "Datei einlesen, Zeilen entfalten (unfold), Komponentenbaum (BEGIN/END), VEVENT interpretieren. Originalzeilen (rawLines) je Komponente/Property erhalten. Unbekannte Properties und Komponenten unverändert speichern. Dateien: src/parser/*."
+  -b "Read the file, unfold lines, build the component tree (BEGIN/END), interpret VEVENT. Preserve original lines (rawLines) per component/property. Keep unknown properties and components unchanged. Files: src/parser/*."
 
 gh issue create -R clavicarius/keepical \
-  -t "Phase 2: Read-only-UI + verlustfreier Roundtrip" \
+  -t "Phase 2: Read-only UI + lossless roundtrip" \
   -l "phase-2,milestone" \
-  -b "Kalender laden, Termine anzeigen, Details anzeigen. Kernmeilenstein: Import -> sofortiger Export ist byte-identisch. Abgedeckt durch test/roundtrip.test.ts (u. a. VALUE=DATE, TZID, VALARM, X-ALT-DESC, X-MICROSOFT-*)."
+  -b "Load calendars, show events, show details. Core milestone: import -> immediate export is byte-identical. Covered by test/roundtrip.test.ts (including VALUE=DATE, TZID, VALARM, X-ALT-DESC, X-MICROSOFT-*)."
 
 gh issue create -R clavicarius/keepical \
-  -t "Phase 3: Bearbeitung (Titel/Datum/Ort/Beschreibung, Neu, Löschen)" \
+  -t "Phase 3: Editing (title/date/location/description, new, delete)" \
   -l "phase-3,editor" \
-  -b "Standardfelder bearbeiten mit selektivem Patch-Export (nur geänderte Properties neu schreiben). Neue Termine mit konfigurierbarem UID-Suffix (@keepical.local). Löschen entfernt nur den betroffenen VEVENT-Block. UID standardmäßig read-only."
+  -b "Edit standard fields with selective patch export (rewrite only changed properties). New events use a configurable UID suffix (@keepical.local). Deleting removes only the affected VEVENT block. UID stays read-only by default."
 
 gh issue create -R clavicarius/keepical \
-  -t "Phase 4: Wiederholungen (RRULE/RDATE/EXDATE/RECURRENCE-ID)" \
+  -t "Phase 4: Recurrence (RRULE/RDATE/EXDATE/RECURRENCE-ID)" \
   -l "phase-4,recurrence" \
-  -b "RRULE-Baustein-UI (FREQ, INTERVAL, COUNT/UNTIL, BYDAY, BYMONTHDAY, BYSETPOS) plus immer sichtbarer Rohtext. Nicht verstandene Teile nicht stillschweigend löschen: erhalten / roh bearbeiten / abbrechen. Einzelne Instanz vs. Serie via RECURRENCE-ID."
+  -b "RRULE building-block UI (FREQ, INTERVAL, COUNT/UNTIL, BYDAY, BYMONTHDAY, BYSETPOS) plus always-visible raw text. Do not silently delete unsupported parts: preserve / edit raw / abort. Distinguish single instance vs. series via RECURRENCE-ID."
 
 gh issue create -R clavicarius/keepical \
-  -t "Phase 5: Validierung + Exportbericht + Vorher/Nachher-Diff" \
+  -t "Phase 5: Validation + export report + before/after diff" \
   -l "phase-5,validation" \
-  -b "Strukturprüfungen (genau ein VCALENDAR, UID/DTSTART vorhanden, nicht DTEND+DURATION, TZID-Konsistenz, gültige RRULE/RDATE/EXDATE, CRLF/Folding). Exportbericht und Diff pro UID. Basis in src/validate/validator.ts."
+  -b "Structural checks (exactly one VCALENDAR, UID/DTSTART required, not DTEND+DURATION, TZID consistency, valid RRULE/RDATE/EXDATE, CRLF/folding). Export report and diff per UID. Base implementation in src/validate/validator.ts."
 
 gh issue create -R clavicarius/keepical \
-  -t "Phase 6: Deployment auf GitHub Pages + Doku + Beispielkalender" \
+  -t "Phase 6: GitHub Pages deployment + docs + sample calendar" \
   -l "phase-6,deployment" \
-  -b "GitHub-Actions-Workflow (siehe .github/workflows/deploy.yml unten), Pages aktivieren (Source: GitHub Actions), vite base=/keepical/. Beispielkalender ohne personenbezogene Daten. iOS-Abo-Praxistest."
+  -b "GitHub Actions workflow (see .github/workflows/deploy.yml below), enable Pages (source: GitHub Actions), vite base=/keepical/. Sample calendar without personal data. iOS subscription real-world test."
 ```
 
-## 4. GitHub-Actions-Workflow für Pages
+## 4. GitHub Actions workflow for Pages
 
-Diese Umgebung konnte die Workflow-Datei nicht schreiben. Lege sie manuell an unter
+This environment could not write the workflow file. Create it manually at
 `.github/workflows/deploy.yml`:
 
 ```yaml
@@ -117,5 +118,5 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-Danach unter GitHub → Settings → Pages die Source auf "GitHub Actions" stellen.
-Die Seite ist dann unter `https://clavicarius.github.io/keepical/` erreichbar.
+Then go to GitHub → Settings → Pages and set the source to "GitHub Actions".
+The site will then be available at `https://clavicarius.github.io/keepical/`.

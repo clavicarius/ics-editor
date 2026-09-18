@@ -1,6 +1,6 @@
 # Versioning
 
-Keepical verwendet automatisches Semantic Versioning über
+Keepical uses automated semantic versioning via
 `.github/workflows/versioning.yml`.
 
 ## Trigger behavior

@@ -1,113 +1,110 @@
-# Architektur
+# Architecture
 
-## Leitprinzip: Raw + Patch
+## Guiding principle: raw + patch
 
-Kein vollständiger Roundtrip durch eine Kalenderbibliothek. Jede Komponente wird
-**doppelt** gehalten:
+No full roundtrip through a calendar library. Every component is stored **twice**:
 
-- als `rawLines` (unangetastete Originalzeilen), und
-- als `parsed` (interpretierte, editierbare Sicht).
+- as `rawLines` (untouched original lines), and
+- as `parsed` (interpreted, editable view).
 
-Beim Export gilt: **unverändert = Originalzeilen ausgeben; geändert = nur betroffene
-Properties patchen**. ICAL.js wird höchstens als optionale Rechenhilfe
-(RRULE-Expansion, Zeitzonen) genutzt, nie als Exportweg.
+When exporting, the rule is: **unchanged = emit original lines; changed = patch only
+the affected properties**. ICAL.js is used at most as an optional helper
+(recurrence expansion, time zones), never as the export path.
 
-### Warum nicht der klassische Roundtrip?
+### Why not the classic roundtrip?
 
-Ein voller Weg `ICS -> Bibliotheksmodell -> Neuerzeugung` kann verändern oder
-entfernen: unbekannte `X-*`-Properties, Property-Reihenfolge, Parameter, HTML in
-`X-ALT-DESC`, mehrere `VALARM`-Blöcke, spezielle `VTIMEZONE`-Informationen sowie
-Formatierung/Folding.
+A full path `ICS -> library model -> regeneration` can change or remove unknown
+`X-*` properties, property order, parameters, HTML in `X-ALT-DESC`, multiple
+`VALARM` blocks, special `VTIMEZONE` data, and formatting/folding.
 
-## Datenmodell
+## Data model
 
-Definiert in `src/model/types.ts`.
+Defined in `src/model/types.ts`.
 
 ```ts
 interface ContentLine {
   name: string;
   parameters: Record<string, string[]>;
-  parameterOrder: string[];   // erhält die ursprüngliche Parameterreihenfolge
+  parameterOrder: string[];   // preserves the original parameter order
   value: string;
-  rawLines: string[];         // ursprüngliche physische Zeilen (inkl. Folding)
+  rawLines: string[];         // original physical lines (including folding)
 }
 
 interface Component {
   kind: string;               // VCALENDAR | VEVENT | VALARM | VTIMEZONE | ...
-  rawLines: string[];         // exakte Originalzeilen inkl. BEGIN/END
+  rawLines: string[];         // exact original lines including BEGIN/END
   properties: ContentLine[];
   children: Component[];
-  dirty: boolean;             // false => rawLines 1:1 ausgeben
+  dirty: boolean;             // false => emit rawLines 1:1
 }
 
 interface VEvent {
-  component: Component;        // Rohzugriff (Source of Truth für den Export)
-  parsed: ParsedEvent;        // interpretierte Sicht für die UI
+  component: Component;        // raw access (source of truth for export)
+  parsed: ParsedEvent;         // interpreted view for the UI
   changedProperties: Set<string>;
   isNew: boolean;
   isDeleted: boolean;
 }
 ```
 
-Der `CalendarModel` (`src/model/types.ts`) hält den `VCALENDAR`-Baum, einen Index
-der editierbaren Events sowie die beim Import erkannte Zeilenendung
-(`originalEol`) und ob die Datei mit einem Zeilenumbruch endete.
+The `CalendarModel` (`src/model/types.ts`) stores the `VCALENDAR` tree, an index of
+editable events, the line ending detected during import (`originalEol`), and whether
+the file ended with a trailing line break.
 
-Die Invariante, die Keepical verlustarm macht: **Ist eine Komponente nicht
-`dirty`, wird sie aus `rawLines` unverändert serialisiert.**
+The invariant that makes Keepical loss-minimizing is: **if a component is not
+`dirty`, it is serialized unchanged from `rawLines`.**
 
-## Datenfluss
+## Data flow
 
 ```mermaid
 flowchart LR
-  File[".ics-Datei"] --> Parse["parseIcs()"]
+  File[".ics file"] --> Parse["parseIcs()"]
   Parse --> Model["CalendarModel (raw + parsed)"]
   Model --> UI["Web Components"]
   UI -->|"setEventProperty / addEvent / deleteEvent"| Model
   Model --> Serialize["serializeCalendar()"]
-  Serialize --> Out[".ics-Export (CRLF)"]
+  Serialize --> Out[".ics export (CRLF)"]
 ```
 
-## Exportstrategie (Herzstück der Verlustarmut)
+## Export strategy (the heart of loss minimization)
 
-Implementiert in `src/export/patch.ts`.
+Implemented in `src/export/patch.ts`.
 
 ```mermaid
 flowchart TD
-  Start["Export starten"] --> LoopComp{"Für jede Komponente"}
-  LoopComp -->|"isDeleted VEVENT"| Skip["Block auslassen"]
-  LoopComp -->|"nicht dirty"| Raw["rawLines 1:1 ausgeben"]
-  LoopComp -->|"dirty VEVENT"| Patch["Patch-Serializer"]
-  LoopComp -->|"isNew VEVENT"| New["Standardkonform erzeugen"]
-  Patch --> PerProp{"Pro Property"}
-  PerProp -->|"in changedProperties"| Rewrite["Property neu schreiben plus falten"]
-  PerProp -->|"sonst"| Keep["Original-rawLines behalten"]
-  Raw --> Emit["CRLF-Ausgabe"]
+  Start["Start export"] --> LoopComp{"For each component"}
+  LoopComp -->|"isDeleted VEVENT"| Skip["Omit block"]
+  LoopComp -->|"not dirty"| Raw["Emit rawLines 1:1"]
+  LoopComp -->|"dirty VEVENT"| Patch["Patch serializer"]
+  LoopComp -->|"isNew VEVENT"| New["Generate standards-compliant block"]
+  Patch --> PerProp{"Per property"}
+  PerProp -->|"in changedProperties"| Rewrite["Rewrite property and fold"]
+  PerProp -->|"otherwise"| Keep["Keep original rawLines"]
+  Raw --> Emit["CRLF output"]
   Patch --> Emit
   New --> Emit
   Skip --> Emit
 ```
 
-Reihenfolge unveränderter Properties bleibt erhalten; nur geänderte Properties
-werden an ihrer bisherigen Position ersetzt, neue ans Ende der Komponente
-angehängt.
+The order of unchanged properties is preserved; only changed properties are replaced
+at their previous position, and new ones are appended to the end of the component.
 
-## Verhalten bei Terminen
+## Event behavior
 
-Siehe `src/model/calendar.ts`.
+See `src/model/calendar.ts`.
 
-- **Bestehend:** UID unverändert; DTSTAMP nach Regel; LAST-MODIFIED aktualisierbar;
-  SEQUENCE erhöhbar; unbearbeitete/unbekannte Properties und Alarme bleiben.
-- **Neu:** `UID:<uuid>@keepical.local` (Suffix konfigurierbar über
-  `DEFAULT_UID_SUFFIX`), Mindestfelder UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
-- **Gelöscht:** kompletter `VEVENT`-Block entfernt, sonst nichts.
+- **Existing:** UID unchanged; DTSTAMP rule applied; LAST-MODIFIED can be updated;
+  SEQUENCE can be incremented; untouched/unknown properties and alarms remain.
+- **New:** `UID:<uuid>@keepical.local` (suffix configurable via
+  `DEFAULT_UID_SUFFIX`), minimum fields UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
+- **Deleted:** the entire `VEVENT` block is removed and nothing else.
 
-## Technischer Stack
+## Technical stack
 
-- TypeScript, Vite (Build + Dev-Server), Vitest (Tests)
-- UI mit nativen Web Components (Custom Elements), kein Framework
-- CSS ohne Präprozessor
-- File System Access API mit `FileReader`-Fallback; Download via Blob
-- Ziel-Hosting: GitHub Pages (statisch, `base` in `vite.config.ts`)
+- TypeScript, Vite (build + dev server), Vitest (tests)
+- UI with native Web Components (custom elements), no framework
+- CSS without a preprocessor
+- File System Access API with `FileReader` fallback; download via Blob
+- Target hosting: GitHub Pages (static, `base` configured in `vite.config.ts`)
 
-Weiter zu [Parser](Parser.md).
+Continue to [Parser](Parser.md).

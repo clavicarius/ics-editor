@@ -1,5 +1,5 @@
-# Keepical Dokumentation
+# Keepical Documentation
 
-Einstieg: **[Home](Home.md)**
+Entry point: **[Home](Home.md)**
 
-Dieses Verzeichnis ist das Code-Wiki des Projekts. Navigation siehe `_Sidebar.md`.
+This directory is the project's code wiki. See `_Sidebar.md` for navigation.

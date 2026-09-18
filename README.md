@@ -1,18 +1,17 @@
-# Keepical — Nur ändern, was du willst.
+# Keepical — Change only what you want.
 
 ![logo](./src/assets/keepical-applogo.png)
 
-Lauffähige Version (GitHub Pages): https://clavicarius.github.io/keepical/
+Live version (GitHub Pages): https://clavicarius.github.io/keepical/
 
-**Keepical** ist eine statische, rein clientseitige Web-App zum **verlustarmen** Bearbeiten von
-`.ics`-Dateien (iCalendar). Kernidee: Die App wandelt den Kalender **nicht** in ein
-vereinfachtes internes Modell um, um ihn danach komplett neu zu serialisieren.
-Stattdessen wird jede Komponente doppelt gehalten — als **Originalzeilen** (`rawLines`)
-und als **interpretierte Daten** (`parsed`).
+**Keepical** is a static, fully client-side web app for **loss-minimizing** editing of
+`.ics` files (iCalendar). The core idea is that the app does **not** transform the
+calendar into a simplified internal model and then serialize it from scratch.
+Instead, every component is stored twice — as **original lines** (`rawLines`) and as
+**interpreted data** (`parsed`).
 
-> **Kernversprechen:** Wird an einem Termin nur der Titel geändert, bleiben alle
-> übrigen Properties dieses Termins **und** alle anderen `VEVENT`s so weit wie
-> möglich byte-identisch.
+> **Core promise:** If you only change an event title, all other properties of that
+> event **and** all other `VEVENT`s remain as byte-identical as possible.
 
 ## Name
 
@@ -20,73 +19,78 @@ und als **interpretierte Daten** (`parsed`).
 | --- | --- |
 | Display | Keepical |
 | Slug | `keepical` |
-| Aussprache | KEEP-ih-cal |
-| Tagline | Nur ändern, was du willst. |
+| Pronunciation | KEEP-ih-cal |
+| Tagline | Change only what you want. |
 
-Keepical verbindet keep und iCal: Die App bearbeitet .ics-Dateien, lässt aber möglichst viel am Original unverändert — unangetastete Termine, Properties und Struktur bleiben erhalten statt neu serialisiert zu werden. Der Name steht für genau dieses Versprechen: ändern, was nötig ist — den Rest behalten.
+Keepical combines keep and iCal: the app edits `.ics` files while preserving as much
+of the original as possible — untouched events, properties, and structure stay in
+place instead of being reserialized. The name expresses exactly that promise:
+change what is necessary and keep the rest.
 
-Kurzvariante: Keepical = keep + iCal. Editieren ohne den Kalender unnötig umzuschreiben.
+Short version: Keepical = keep + iCal. Edit without rewriting the calendar
+unnecessarily.
 
-## Warum nicht einfach ICAL.js?
+## Why not just use ICAL.js?
 
-Ein voller Roundtrip `ICS → Bibliotheksmodell → Neuerzeugung` kann verändern oder
-entfernen: unbekannte `X-*`-Properties, Property-Reihenfolge, Parameter, HTML in
-`X-ALT-DESC`, mehrere `VALARM`-Blöcke, spezielle `VTIMEZONE`-Informationen sowie
-Formatierung/Folding. Dieser Editor umgeht das über eine **Raw-/Patch-Strategie**:
+A full roundtrip `ICS → library model → regeneration` can change or remove unknown
+`X-*` properties, property order, parameters, HTML in `X-ALT-DESC`, multiple
+`VALARM` blocks, special `VTIMEZONE` data, and formatting/folding. This editor avoids
+that with a **raw/patch strategy**:
 
-- **Unveränderte `VEVENT`s** werden aus den Originalzeilen ausgegeben.
-- **Geänderte Properties** werden gezielt neu geschrieben, der Rest bleibt original.
-- **Unbekannte Properties, `VALARM`, `VTIMEZONE`** werden unverändert durchgereicht.
-- **Gelöschte Termine** entfernen nur ihren eigenen `VEVENT`-Block.
-- **Neue Termine** werden standardkonform erzeugt.
+- **Unchanged `VEVENT`s** are emitted from the original lines.
+- **Changed properties** are rewritten selectively while the rest stays original.
+- **Unknown properties, `VALARM`, `VTIMEZONE`** pass through unchanged.
+- **Deleted events** remove only their own `VEVENT` block.
+- **New events** are generated in a standards-compliant way.
 
-## Datenschutz
+## Privacy
 
-Alles läuft lokal im Browser: keine Uploads, kein Backend, kein Tracking. Dateien
-werden über die File System Access API (mit `FileReader`-Fallback) gelesen und als
-Download exportiert.
+Everything runs locally in the browser: no uploads, no backend, no tracking. Files
+are read via the File System Access API (with a `FileReader` fallback) and exported
+as downloads.
 
-## Entwicklung
+## Development
 
 ```bash
 npm install
-npm run dev        # Dev-Server
-npm test           # Vitest (u. a. Roundtrip-Tests)
-npm run build      # Produktionsbuild nach dist/
+npm run dev        # Dev server
+npm test           # Vitest (including roundtrip tests)
+npm run build      # Production build to dist/
 ```
 
-Ein Pre-Commit-Hook (Husky) führt vor jedem Commit `npm test` und `npm run build` aus. Schlägt einer der Schritte fehl, wird der Commit abgebrochen. Notausstieg: `git commit --no-verify`.
+A pre-commit hook (Husky) runs `npm test` and `npm run build` before every commit.
+If either step fails, the commit is aborted. Emergency exit: `git commit --no-verify`.
 
-## Dokumentation
+## Documentation
 
-Das Code-Wiki liegt unter [`docs/`](docs/Home.md):
+The code wiki lives under [`docs/`](docs/Home.md):
 
-- [Home](docs/Home.md) — Einstieg
-- [Plan](docs/Plan.md) — Architektur- und Umsetzungsplan (archiviert)
+- [Home](docs/Home.md) — entry point
+- [Plan](docs/Plan.md) — archived architecture and implementation plan
 - [Architecture](docs/Architecture.md) · [Parser](docs/Parser.md) · [Export](docs/Export-and-Validation.md)
 - [UI](docs/UI.md) · [Testing](docs/Testing.md) · [Roadmap](docs/Roadmap.md) · [Deployment](docs/Deployment.md) · [Versioning](docs/VERSIONING.md)
 
-GitHub-Wiki-Kompatibilität: [`docs/_Sidebar.md`](docs/_Sidebar.md) kann 1:1 in das
-GitHub-Wiki übernommen werden.
+GitHub wiki compatibility: [`docs/_Sidebar.md`](docs/_Sidebar.md) can be copied into
+the GitHub wiki as-is.
 
-## Architektur (Kurzüberblick)
+## Architecture (short overview)
 
 ```text
 src/
-  model/     Datenmodell (rawLines + parsed) und CalendarModel
-  parser/    Unfolding, ContentLine-Split, Komponentenbaum, VEVENT-Interpretation
-  export/    Folding, Raw-vs-Patch-Serialisierung
-  validate/  Strukturprüfungen + Exportbericht/Diff
-  ui/        Web Components (Liste, Editor, RRULE, Bericht)
-docs/        Code-Wiki (siehe oben)
+  model/     Data model (rawLines + parsed) and CalendarModel
+  parser/    Unfolding, content-line split, component tree, VEVENT interpretation
+  export/    Folding, raw-vs-patch serialization
+  validate/  Structural checks + export report/diff
+  ui/        Web Components (list, editor, RRULE, report)
+docs/        Code wiki (see above)
 ```
 
 ## Status
 
-Frühe Phase. Reihenfolge: Parser + verlustfreier Roundtrip (Meilenstein) →
-Bearbeitung → Wiederholungen → Validierung/Diff → Deployment (GitHub Pages).
-Siehe [Roadmap](docs/Roadmap.md) und die GitHub-Issues für die einzelnen Phasen.
+Early stage. Order: parser + lossless roundtrip (milestone) → editing → recurrence →
+validation/diff → deployment (GitHub Pages). See [Roadmap](docs/Roadmap.md) and the
+GitHub issues for the individual phases.
 
-## Lizenz
+## License
 
 MIT

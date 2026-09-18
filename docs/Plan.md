@@ -1,25 +1,25 @@
-# Verlustarmer ICS-Editor (Keepical) — Architektur- und Umsetzungsplan
+# Loss-minimizing ICS editor (Keepical) — architecture and implementation plan
 
-_Archivierte Planfassung. Die laufende Doku steht im Wiki: [Home](Home.md)._
+_Archived plan version. The active documentation lives in the wiki: [Home](Home.md)._
 
-## Leitprinzip
+## Guiding principle
 
-Kein vollständiger Roundtrip durch eine Kalenderbibliothek. Jede Komponente wird
-doppelt gehalten: als `rawLines` (unangetastet) und als `parsed` (interpretiert).
-Beim Export gilt: **unverändert = Originalzeilen ausgeben; geändert = nur
-betroffene Properties patchen**. ICAL.js wird höchstens als optionale Rechenhilfe
-(RRULE-Expansion, Zeitzonen) genutzt, nie als Exportweg.
+No full roundtrip through a calendar library. Every component is stored twice: as
+`rawLines` (untouched) and as `parsed` (interpreted). On export, the rule is:
+**unchanged = emit original lines; changed = patch only affected properties**.
+ICAL.js is used at most as an optional helper (recurrence expansion, time zones),
+never as the export path.
 
-## Technischer Stack (Variante B)
+## Technical stack (variant B)
 
-- TypeScript, Vite (Build + Dev-Server), Vitest (Tests)
-- UI mit nativen Web Components (Custom Elements), kein Framework
-- CSS ohne Präprozessor
-- File System Access API mit `FileReader`-Fallback; Download via Blob
-- Ziel-Hosting: GitHub Pages (statisch, `base` in Vite konfiguriert)
-- UID-Default-Suffix: `@keepical.local`, im UI konfigurierbar
+- TypeScript, Vite (build + dev server), Vitest (tests)
+- UI with native Web Components (custom elements), no framework
+- CSS without a preprocessor
+- File System Access API with `FileReader` fallback; download via Blob
+- Target hosting: GitHub Pages (static, `base` configured in Vite)
+- Default UID suffix: `@keepical.local`, configurable in the UI
 
-## Projektstruktur
+## Project structure
 
 ```text
 keepical/
@@ -33,56 +33,56 @@ keepical/
 │   ├── parser/    unfold.ts, contentline.ts, tree.ts, vevent.ts
 │   ├── export/    fold.ts, serialize.ts, patch.ts
 │   ├── validate/  validator.ts
-│   ├── ui/        app-shell.ts (weitere Komponenten geplant)
+│   ├── ui/        app-shell.ts (more components planned)
 │   └── styles/app.css
 ├── test/          fixtures/, *.test.ts
-└── docs/          Code-Wiki
+└── docs/          code wiki
 ```
 
-## Datenmodell
+## Data model
 
-Siehe [Architecture](Architecture.md) und `src/model/types.ts`.
+See [Architecture](Architecture.md) and `src/model/types.ts`.
 
-## Kritische Parser-Regeln
+## Critical parser rules
 
-Siehe [Parser](Parser.md). Kurz:
+See [Parser](Parser.md). In short:
 
-- Zeilenumbrüche: CRLF/LF/CR beim Import, Export immer CRLF.
-- Unfolding: Fortsetzung mit Space/Tab; genau ein führendes Zeichen entfernen.
-  Physische Rohzeilen zusätzlich behalten.
-- ContentLine-Split: Zustandsmaschine, nicht `split(';'/':')`.
-- Baum: `BEGIN:X`/`END:X`; unbekannte Komponenten als generischer `Component`.
+- Line endings: CRLF/LF/CR on import, CRLF on export.
+- Unfolding: continuation with space/tab; remove exactly one leading character.
+  Preserve the physical raw lines as well.
+- ContentLine split: state machine, not `split(';'/':')`.
+- Tree: `BEGIN:X`/`END:X`; unknown components kept as generic `Component`.
 
-## Exportstrategie
+## Export strategy
 
-Siehe [Architecture](Architecture.md) (Mermaid) und [Export & Validation](Export-and-Validation.md).
+See [Architecture](Architecture.md) (Mermaid) and [Export & Validation](Export-and-Validation.md).
 
-## Validierung & Bericht
+## Validation & report
 
-Siehe [Export & Validation](Export-and-Validation.md).
+See [Export & Validation](Export-and-Validation.md).
 
-## UI-Bausteine
+## UI building blocks
 
-Siehe [UI](UI.md). Geplant: `event-list`, `event-editor`, `rrule-editor`,
-`export-report` als eigene Custom Elements.
+See [UI](UI.md). Planned: `event-list`, `event-editor`, `rrule-editor`,
+`export-report` as standalone custom elements.
 
-## Verhalten bei Terminen
+## Event behavior
 
-- Bestehend: UID unverändert; unbearbeitete/unbekannte Properties und Alarme bleiben.
-- Neu: `UID:<uuid>@keepical.local`, Mindestfelder UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
-- Gelöscht: kompletter VEVENT-Block entfernt, sonst nichts.
+- Existing: UID unchanged; untouched/unknown properties and alarms remain.
+- New: `UID:<uuid>@keepical.local`, minimum fields UID/DTSTAMP/DTSTART/DTEND|DURATION/SUMMARY.
+- Deleted: remove the entire VEVENT block and nothing else.
 
-## Teststrategie
+## Test strategy
 
-Siehe [Testing](Testing.md).
+See [Testing](Testing.md).
 
-**Akzeptanzkern:** Wird nur der Titel geändert, bleiben alle anderen Properties
-dieses und aller übrigen VEVENTs so weit wie möglich unverändert.
+**Core acceptance criterion:** If only the title changes, all other properties of
+that event and of all other VEVENTs remain as byte-identical as possible.
 
 ## Deployment
 
-Siehe [Deployment](Deployment.md).
+See [Deployment](Deployment.md).
 
-## Umsetzungsreihenfolge
+## Implementation order
 
-Siehe [Roadmap](Roadmap.md). Phasen 1–2 zuerst als harter Meilenstein.
+See [Roadmap](Roadmap.md). Phases 1–2 come first as the hard milestone.

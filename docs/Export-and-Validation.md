@@ -1,40 +1,39 @@
-# Export & Validierung
+# Export & Validation
 
 ## Folding — `src/export/fold.ts`
 
-`foldLine()` faltet logische Zeilen bei **75 Oktetts** und fügt CRLF + ein
-Leerzeichen ein. Gezählt werden UTF-8-Oktetts, und es wird nur an
-Zeichengrenzen gebrochen, sodass keine Multibyte-Sequenz zerschnitten wird. Das
-führende Leerzeichen der Fortsetzungszeile zählt zum Limit.
+`foldLine()` folds logical lines at **75 octets** and inserts CRLF + a single space.
+UTF-8 octets are counted, and line breaks only happen at character boundaries so no
+multibyte sequence is split. The leading space on the continuation line counts
+against the limit.
 
-## Serialisierung einer Property — `src/export/serialize.ts`
+## Serializing a property — `src/export/serialize.ts`
 
-`renderContentLine()` baut `NAME;PARAM=VALUE:VALUE` wieder auf (Parameter in
-Originalreihenfolge, Quoting bei Sonderzeichen). `serializeContentLine()` faltet
-das Ergebnis. Wird nur für **geänderte** Properties benutzt.
+`renderContentLine()` rebuilds `NAME;PARAM=VALUE:VALUE` (parameters in original
+order, quoting for special characters). `serializeContentLine()` then folds the
+result. This is used only for **changed** properties.
 
-## Patch-Serializer — `src/export/patch.ts`
+## Patch serializer — `src/export/patch.ts`
 
-`serializeCalendar()` ist das Herzstück:
+`serializeCalendar()` is the core:
 
-- Nicht `dirty` -> `rawLines` 1:1 ausgeben.
-- `dirty` -> Block neu aufbauen, aber jede **unveränderte** Property aus ihren
-  eigenen `rawLines` ausgeben; nur Properties in `changedProperties` werden neu
-  gerendert.
-- Gelöschte `VEVENT`s werden übersprungen.
-- Ausgabe mit CRLF; optionaler abschließender Zeilenumbruch je nach Original.
+- Not `dirty` -> emit `rawLines` 1:1.
+- `dirty` -> rebuild the block, but emit every **unchanged** property from its own
+  `rawLines`; only properties in `changedProperties` are rerendered.
+- Deleted `VEVENT`s are skipped.
+- Output uses CRLF, with an optional trailing line break matching the original.
 
-## Validierung & Bericht — `src/validate/validator.ts`
+## Validation & report — `src/validate/validator.ts`
 
-`validate()` prüft konservativ, ohne etwas umzuschreiben:
+`validate()` checks conservatively without rewriting anything:
 
-- genau ein `VCALENDAR`
-- jede `VEVENT` mit `UID` und `DTSTART`
-- nicht `DTEND` und `DURATION` gleichzeitig
-- TZID-Konsistenz (kein TZID zusammen mit UTC-`Z`)
+- exactly one `VCALENDAR`
+- every `VEVENT` has `UID` and `DTSTART`
+- not both `DTEND` and `DURATION`
+- TZID consistency (no TZID together with UTC `Z`)
 
-`buildReport()` liefert den Exportbericht: Anzahl unverändert/geändert/neu/gelöscht,
-erhaltene UIDs, `VTIMEZONE`/`VALARM`/unbekannte Properties erhalten, plus Diff pro
-UID (welche Property-Namen geändert wurden).
+`buildReport()` returns the export report: counts of unchanged/changed/new/deleted,
+preserved UIDs, preserved `VTIMEZONE`/`VALARM`/unknown properties, plus a diff per
+UID (which property names changed).
 
-Weiter zu [UI](UI.md).
+Continue to [UI](UI.md).
