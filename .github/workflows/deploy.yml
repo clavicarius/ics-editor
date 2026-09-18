@@ -46,9 +46,9 @@ jobs:
           fi
           echo "VITE_VERSION_TAG=${version_tag:-development}" >> "$GITHUB_ENV"
       - run: npm run build
-      # Always upload: entry points are only tags, manual dispatch, or reusable call.
-      # Do not gate on caller event name — reusable workflows inherit the caller's
-      # event (e.g. push to main), so event-name checks would skip the upload.
+      # Always upload: triggers are only tags, workflow_dispatch, or workflow_call.
+      # Do not gate on github.event_name == 'workflow_call' — reusable workflows
+      # inherit the caller's event (e.g. push to main), so that check never matches.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
