@@ -28,7 +28,7 @@
 
 body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 
-ics-app {
+keepical-app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
