@@ -1,52 +1,51 @@
 # UI
 
-Die Oberfläche ist framework-frei mit nativen Web Components umgesetzt. Aktuell
-liegt die gesamte MVP-Interaktivität in einer Komponente `keepical-app`
-(`src/ui/app-shell.ts`), registriert über `src/main.ts`. Styles in
-`src/styles/app.css` (inkl. Dark-Mode über `prefers-color-scheme`).
+The interface is implemented without a framework, using native Web Components.
+Currently all MVP interactivity lives in a single `keepical-app` component
+(`src/ui/app-shell.ts`), registered through `src/main.ts`. Styles are in
+`src/styles/app.css` (including dark mode via `prefers-color-scheme`).
 
-## Aufbau
+## Structure
 
 ```mermaid
 flowchart TD
-  App["keepical-app (app-shell.ts)"] --> Toolbar["Toolbar: Öffnen / + Termin / Export"]
-  App --> List["Terminliste + Filter"]
-  App --> Editor["Bearbeitungsmaske"]
-  App --> Report["Exportbericht"]
+  App["keepical-app (app-shell.ts)"] --> Toolbar["Toolbar: Open / + Event / Export"]
+  App --> List["Event list + filters"]
+  App --> Editor["Editing form"]
+  App --> Report["Export report"]
 ```
 
-## Terminliste
+## Event list
 
-Zeigt Datum/Zeit, Titel, Wiederholungs- (↻) und Alarm-Symbol (⏰) sowie einen
-Änderungsindikator. Filter: Suche (Titel/Ort), nur geänderte, nur Serien, nur
-Termine mit Alarm.
+Shows date/time, title, recurrence (↻) and alarm (⏰) icons, plus a change indicator.
+Filters: search (title/location), changed only, recurring only, events with alarms.
 
-## Bearbeitungsmaske
+## Editing form
 
-Standardfelder: SUMMARY, DTSTART, DTEND, LOCATION, DESCRIPTION. Erweiterte Bereiche
-(aufklappbar): RRULE (roh) und EXDATE sowie eine Rohdaten-Ansicht aller Properties.
-Die UID wird **schreibgeschützt** angezeigt.
+Standard fields: SUMMARY, DTSTART, DTEND, LOCATION, DESCRIPTION. Advanced sections
+(collapsible): RRULE (raw) and EXDATE, plus a raw-data view of all properties. The
+UID is shown as **read-only**.
 
-Änderungen laufen über `setEventProperty()` (`src/model/calendar.ts`), das die
-betroffene Property in `changedProperties` markiert und die Komponente `dirty`
-setzt — Basis für den selektiven Patch-Export.
+Changes go through `setEventProperty()` (`src/model/calendar.ts`), which marks the
+affected property in `changedProperties` and sets the component to `dirty` — the
+basis for selective patch export.
 
-## Neu / Löschen
+## New / delete
 
-`+ Termin` erzeugt über `addEvent()` einen standardkonformen `VEVENT` mit neuer UID
-(`@keepical.local`). Löschen markiert den Termin (`deleteEvent()`); beim Export
-verschwindet nur dessen Block.
+`+ Event` creates a standards-compliant `VEVENT` with a new UID via `addEvent()`
+(`@keepical.local`). Deleting marks the event via `deleteEvent()`; on export, only
+that block disappears.
 
 ## Export
 
-Vor dem Download wird `validate()` ausgeführt; bei Fehlern erfolgt eine Rückfrage.
-Danach `serializeCalendar()` -> Blob-Download, anschließend Anzeige des Berichts aus
+Before download, `validate()` runs and prompts on errors. Then
+`serializeCalendar()` creates the Blob download, followed by the report from
 `buildReport()`.
 
-## Ausblick
+## Outlook
 
-Die im Plan skizzierten Einzelkomponenten (`event-list`, `event-editor`,
-`rrule-editor`, `export-report`) können bei wachsender Komplexität aus `app-shell`
-herausgelöst werden. Siehe [Roadmap](Roadmap.md).
+The individual components outlined in the plan (`event-list`, `event-editor`,
+`rrule-editor`, `export-report`) can be extracted from `app-shell` as complexity
+increases. See [Roadmap](Roadmap.md).
 
-Weiter zu [Testing](Testing.md).
+Continue to [Testing](Testing.md).

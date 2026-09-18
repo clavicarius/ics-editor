@@ -1,33 +1,33 @@
 # Testing
 
-Tests laufen mit Vitest (`npm test`). Sie sind der Vertrag für die Verlustarmut.
+Tests run with Vitest (`npm test`). They are the contract for loss minimization.
 
 ## Fixture — `test/fixtures/sample.ts`
 
-Der Beispielkalender wird programmatisch als CRLF-String gebaut (nicht als
-`.ics`-Datei gelesen), damit die exakten Zeilenenden und die Faltung unabhängig von
-Git-`autocrlf` garantiert sind. Enthält: `VALUE=DATE`, `TZID=Europe/Berlin` mit
-`VTIMEZONE`, mehrere `VALARM`, gefaltetes `X-ALT-DESC;FMTTYPE=text/html`,
-`X-MICROSOFT-*` und einen Termin über Mitternacht.
+The sample calendar is built programmatically as a CRLF string (not read from an
+`.ics` file) so exact line endings and folding remain guaranteed independent of
+Git `autocrlf`. It includes: `VALUE=DATE`, `TZID=Europe/Berlin` with `VTIMEZONE`,
+multiple `VALARM`s, folded `X-ALT-DESC;FMTTYPE=text/html`, `X-MICROSOFT-*`, and an
+overnight event.
 
-## Roundtrip-Tests — `test/roundtrip.test.ts`
+## Roundtrip tests — `test/roundtrip.test.ts`
 
-- Import zu Export ist byte-identisch.
-- Alle UIDs stabil; VALUE=DATE, TZID, gefaltetes X-ALT-DESC, X-MICROSOFT-*, jeder
-  VALARM bleiben erhalten; Mitternachtstermin behält lokale Zeiten.
-- Selektives Editieren: nur SUMMARY ändern lässt alles andere unverändert.
-- Neuer Termin erhält frische UID (`@keepical.local`); Löschen berührt keinen
-  anderen Termin.
+- Import to export is byte-identical.
+- All UIDs stay stable; VALUE=DATE, TZID, folded X-ALT-DESC, X-MICROSOFT-*, and
+  every VALARM are preserved; the overnight event keeps local times.
+- Selective editing: changing only SUMMARY leaves everything else untouched.
+- A new event gets a fresh UID (`@keepical.local`); deleting one event does not
+  affect any other event.
 
-## Parser-Unit-Tests — `test/parser.test.ts`
+## Parser unit tests — `test/parser.test.ts`
 
-- `parseContentLine`: gequotete/mehrwertige Parameter.
-- `unfold`: Fortsetzungszeilen, LF-only.
-- `foldLine`: 75-Oktett-Grenze mit führendem Space.
+- `parseContentLine`: quoted and multi-value parameters.
+- `unfold`: continuation lines, LF-only.
+- `foldLine`: 75-octet limit with leading space.
 
-## Akzeptanzkern
+## Core acceptance criterion
 
-Wird nur der Titel geändert, bleiben alle anderen Properties dieses und aller
-übrigen VEVENTs so weit wie möglich unverändert.
+If only the title changes, all other properties of that event and of all other
+`VEVENT`s remain as byte-identical as possible.
 
-Weiter zu [Roadmap](Roadmap.md).
+Continue to [Roadmap](Roadmap.md).

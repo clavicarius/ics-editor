@@ -1,51 +1,50 @@
 # Keepical — Wiki
 
-Willkommen im Code-Wiki von **Keepical**: einer statischen,
-rein clientseitigen Web-App zum verlustarmen Bearbeiten von `.ics`-Dateien, ohne unbekannte
-Properties, `VTIMEZONE`, `VALARM` oder HTML-Inhalte beim Roundtrip zu verlieren.
+Welcome to the code wiki for **Keepical**: a static, fully client-side web app for
+loss-minimizing editing of `.ics` files without losing unknown properties,
+`VTIMEZONE`, `VALARM`, or HTML content during roundtrips.
 
-> **Kernversprechen:** Wird an einem Termin nur der Titel geändert, bleiben alle
-> übrigen Properties dieses Termins **und** alle anderen `VEVENT`s so weit wie
-> möglich byte-identisch.
+> **Core promise:** If you only change an event title, all other properties of that
+> event **and** all other `VEVENT`s remain as byte-identical as possible.
 
 ## Navigation
 
-| Seite | Inhalt |
+| Page | Content |
 | --- | --- |
-| [Plan](Plan.md) | Archivierte Architektur- und Umsetzungsplanfassung |
-| [Architecture](Architecture.md) | Leitprinzip (Raw/Patch), Datenmodell, Exportstrategie |
-| [Parser](Parser.md) | Unfolding, ContentLine-Split, Komponentenbaum, VEVENT-Interpretation |
-| [Export & Validation](Export-and-Validation.md) | Folding, Patch-Serializer, Validierung, Exportbericht |
-| [UI](UI.md) | Web-Components-Aufbau, Liste, Editor, RRULE, Bericht |
-| [Testing](Testing.md) | Fixtures, Roundtrip-Tests, Akzeptanzkriterien |
-| [Roadmap](Roadmap.md) | Entwicklungsphasen 1–6 und Status |
-| [Deployment](Deployment.md) | GitHub Pages, Actions-Workflow, Setup-Befehle |
-| [Versioning](VERSIONING.md) | Automatische SemVer-Tags und Pages-Deploy |
+| [Plan](Plan.md) | Archived architecture and implementation plan |
+| [Architecture](Architecture.md) | Guiding principle (raw/patch), data model, export strategy |
+| [Parser](Parser.md) | Unfolding, content-line split, component tree, VEVENT interpretation |
+| [Export & Validation](Export-and-Validation.md) | Folding, patch serializer, validation, export report |
+| [UI](UI.md) | Web Components structure, list, editor, RRULE, report |
+| [Testing](Testing.md) | Fixtures, roundtrip tests, acceptance criteria |
+| [Roadmap](Roadmap.md) | Development phases 1–6 and status |
+| [Deployment](Deployment.md) | GitHub Pages, Actions workflow, setup commands |
+| [Versioning](VERSIONING.md) | Automatic SemVer tags and Pages deploy |
 
-## Schnellstart
+## Quick start
 
 ```bash
 npm install
-npm run dev       # Dev-Server
-npm test          # Roundtrip- und Parser-Tests
-npm run build     # Produktionsbuild nach dist/
+npm run dev       # Dev server
+npm test          # Roundtrip and parser tests
+npm run build     # Production build to dist/
 ```
 
-## Verzeichnisüberblick
+## Directory overview
 
 ```text
 src/
-  model/     Datenmodell (rawLines + parsed) und Editieroperationen
-  parser/    Unfolding, ContentLine-Split, Komponentenbaum, VEVENT-Interpretation
-  export/    Folding, Raw-vs-Patch-Serialisierung
-  validate/  Strukturprüfungen + Exportbericht/Diff
-  ui/        Web Components (Liste, Editor, RRULE, Bericht)
-test/        Vitest-Fixtures und Tests
-docs/        Dieses Wiki
+  model/     Data model (rawLines + parsed) and editing operations
+  parser/    Unfolding, content-line split, component tree, VEVENT interpretation
+  export/    Folding, raw-vs-patch serialization
+  validate/  Structural checks + export report/diff
+  ui/        Web Components (list, editor, RRULE, report)
+test/        Vitest fixtures and tests
+docs/        This wiki
 ```
 
-## Konventionen dieses Wikis
+## Wiki conventions
 
-- Jede Seite beschreibt **ein** Thema und verlinkt auf die zugehörigen Quelldateien.
-- Codeverweise nennen den Pfad relativ zur Projektwurzel, z. B. `src/export/patch.ts`.
-- Diagramme sind in Mermaid gehalten und werden von GitHub direkt gerendert.
+- Each page describes **one** topic and links to the relevant source files.
+- Code references use paths relative to the project root, for example `src/export/patch.ts`.
+- Diagrams use Mermaid and are rendered directly by GitHub.

@@ -1,61 +1,61 @@
 # Deployment
 
-Statische Veröffentlichung auf GitHub Pages. Der Vite-`base`-Pfad ist
-`/keepical/` (`vite.config.ts`); Override über `VITE_BASE`.
+Static publishing to GitHub Pages. The Vite `base` path is `/keepical/`
+(`vite.config.ts`); override via `VITE_BASE`.
 
-## Lokale Befehle
+## Local commands
 
-Die folgenden Befehle gelten relativ zum Projektwurzelverzeichnis (dort, wo
-`package.json` liegt).
+The following commands are relative to the project root directory (where
+`package.json` is located).
 
 ```bash
 npm install
 npm test
-npm run build    # erzeugt dist/
+npm run build    # creates dist/
 ```
 
 ## GitHub Pages
 
-1. Workflow-Datei `.github/workflows/deploy.yml` (Source of Truth).
-2. Unter GitHub -> Settings -> Pages die Source auf **GitHub Actions** stellen.
-3. Die Seite ist dann unter `https://clavicarius.github.io/keepical/` erreichbar.
+1. Workflow file `.github/workflows/deploy.yml` (source of truth).
+2. In GitHub -> Settings -> Pages, set the source to **GitHub Actions**.
+3. The site is then available at `https://clavicarius.github.io/keepical/`.
 
-### Wann deployt wird
+### When deployment runs
 
-- **Nach Merge auf `main`:** [Versioning](VERSIONING.md) erzeugt einen
-  Full-Tag `v*.*.*` und ruft danach `deploy.yml` per `workflow_call` auf
-  (mit Input `version-tag`). So startet der Deploy auch, wenn der Tag-Push mit
-  `GITHUB_TOKEN` keine eigenen Workflows auslöst.
-- **Manuell:** `workflow_dispatch` auf dem Deploy-Workflow.
-- **Tag-Push von außerhalb:** `on.push.tags: v*.*.*` (z. B. manuell erzeugte
-  Tags mit einem User-Token).
+- **After merge to `main`:** [Versioning](VERSIONING.md) creates a full tag
+  `v*.*.*` and then calls `deploy.yml` via `workflow_call`
+  (with input `version-tag`). This ensures deployment still starts even when the
+  tag push made with `GITHUB_TOKEN` does not trigger its own workflows.
+- **Manually:** `workflow_dispatch` on the deploy workflow.
+- **External tag push:** `on.push.tags: v*.*.*` (for example tags created manually
+  with a user token).
 
-Der Deploy-Workflow baut, führt Tests aus und deployt `dist/` über
-`actions/upload-pages-artifact` + `actions/deploy-pages`. Es gibt **keinen**
-Deploy-Trigger auf `push` zu `main` (vermeidet Builds mit Fallback-Version
-`development` vor dem Tag).
+The deploy workflow builds, runs tests, and deploys `dist/` via
+`actions/upload-pages-artifact` + `actions/deploy-pages`. There is **no** deploy
+trigger on `push` to `main` (this avoids builds with fallback version
+`development` before the tag exists).
 
-Upload und Deploy sind für alle Einstiege des Workflows **ohne**
-`github.event_name`-Guards: Bei `workflow_call` erbt der Reusable Workflow den
-Caller-Context (`push` / `refs/heads/main`), daher würde eine Prüfung auf
-`workflow_call` oder Tag-Refs Upload/Deploy fälschlich überspringen.
+Upload and deploy intentionally run for all workflow entry points **without**
+`github.event_name` guards: with `workflow_call`, the reusable workflow inherits the
+caller context (`push` / `refs/heads/main`), so checking for `workflow_call` or tag
+refs would incorrectly skip Pages upload/deploy.
 
-Job-Concurrency für Pages bleibt im Deploy-Job (`group: pages`); ein
-top-level-`concurrency: pages` wird bewusst **nicht** gesetzt (Deadlock mit dem
-Deploy-Job, siehe PR #10).
+Pages job concurrency stays on the deploy job itself (`group: pages`); a top-level
+`concurrency: pages` is intentionally **not** set (deadlock with the deploy job; see
+PR #10).
 
-Aktuelle Workflow-Definition:
+Current workflow definitions:
 
 - [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
 - [`.github/workflows/versioning.yml`](../.github/workflows/versioning.yml)
 
-## Git und Issues
+## Git and issues
 
-Phasen-Issues liegen im GitHub-Repository. Siehe [Roadmap](Roadmap.md).
+Phase issues live in the GitHub repository. See [Roadmap](Roadmap.md).
 
-## Datenschutz
+## Privacy
 
-Die App arbeitet vollständig clientseitig: keine Uploads, kein Backend, kein Tracking.
-Dateien werden über FileReader / File System Access API gelesen und als Download exportiert.
+The app is fully client-side: no uploads, no backend, no tracking. Files are read
+via FileReader / File System Access API and exported as downloads.
 
-Zurück zur [Home](Home.md).
+Back to [Home](Home.md).

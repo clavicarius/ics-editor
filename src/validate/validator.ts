@@ -47,7 +47,7 @@ export function validate(model: CalendarModel): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
   if (model.root.kind !== "VCALENDAR") {
-    issues.push({ severity: "error", message: "Es muss genau ein VCALENDAR vorhanden sein." });
+    issues.push({ severity: "error", message: "Exactly one VCALENDAR must be present." });
   }
 
   for (const ev of model.events) {
@@ -55,15 +55,15 @@ export function validate(model: CalendarModel): ValidationIssue[] {
     const uid = ev.parsed.uid || undefined;
 
     if (!ev.parsed.uid) {
-      issues.push({ severity: "error", message: "VEVENT ohne UID.", uid });
+      issues.push({ severity: "error", message: "VEVENT without UID.", uid });
     }
     if (!ev.parsed.dtstart) {
-      issues.push({ severity: "error", message: "VEVENT ohne DTSTART.", uid });
+      issues.push({ severity: "error", message: "VEVENT without DTSTART.", uid });
     }
     if (ev.parsed.dtend && ev.parsed.duration) {
       issues.push({
         severity: "error",
-        message: "DTEND und DURATION dürfen nicht gleichzeitig gesetzt sein.",
+        message: "DTEND and DURATION must not be set at the same time.",
         uid,
       });
     }
@@ -72,7 +72,7 @@ export function validate(model: CalendarModel): ValidationIssue[] {
       if (dt?.tzid && dt.isUtc) {
         issues.push({
           severity: "warning",
-          message: "Zeitwert hat sowohl TZID als auch UTC-Suffix (Z).",
+          message: "Date/time value has both TZID and UTC suffix (Z).",
           uid,
         });
       }
