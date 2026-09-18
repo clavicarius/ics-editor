@@ -23,7 +23,7 @@ function fmtWhen(ev: VEvent): string {
   if (!dt) return "—";
   const raw = dt.raw;
   if (dt.isDate && /^\d{8}$/.test(raw)) {
-    return `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)} (ganztägig)`;
+    return `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)} (all-day)`;
   }
   const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/.exec(raw);
   if (m) return `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}`;
@@ -79,17 +79,17 @@ export class AppShell extends HTMLElement {
     const r = buildReport(this.model);
     const el = this.querySelector("#report");
     if (!el) return;
-    el.innerHTML = `<div class="report"><pre>Export erstellt
+    el.innerHTML = `<div class="report"><pre>Export created
 
-VEVENT unverändert: ${r.unchanged}
-VEVENT geändert:    ${r.changed}
-VEVENT neu:         ${r.created}
-VEVENT gelöscht:    ${r.deleted}
-UIDs unverändert:   ${r.uidsPreserved}
-VTIMEZONE erhalten: ${r.vtimezonePreserved ? "ja" : "—"}
-VALARM erhalten:    ${r.valarmsPreserved}
-Unbekannte Properties erhalten: ${r.unknownPropertiesPreserved ? "ja" : "nein"}
-${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join("")}</pre></div>`;
+VEVENT unchanged: ${r.unchanged}
+VEVENT changed:   ${r.changed}
+VEVENT new:       ${r.created}
+VEVENT deleted:   ${r.deleted}
+UIDs preserved:   ${r.uidsPreserved}
+VTIMEZONE kept:   ${r.vtimezonePreserved ? "yes" : "—"}
+VALARM kept:      ${r.valarmsPreserved}
+Unknown properties kept: ${r.unknownPropertiesPreserved ? "yes" : "no"}
+${r.perEvent.map((d) => `\n${d.uid}\n  changed: ${d.changed.join(", ")}`).join("")}</pre></div>`;
   }
 
   private visibleEvents(): VEvent[] {
@@ -114,10 +114,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
       <div class="toolbar">
         <div class="brand">
           <img src="${logoUrl}" alt="" width="32" height="32" />
-          <h1>Keepical <small style="color:var(--muted)">Nur ändern, was du willst.</small></h1>
+          <h1>Keepical <small style="color:var(--muted)">Change only what you want.</small></h1>
         </div>
         <input type="file" id="file" accept=".ics,text/calendar" />
-        <button id="add" ${hasModel ? "" : "disabled"}>+ Termin</button>
+        <button id="add" ${hasModel ? "" : "disabled"}>+ Event</button>
         <button id="export" class="primary" ${hasModel ? "" : "disabled"}>Export</button>
       </div>
       ${
@@ -125,10 +125,10 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
           ? `<div class="layout">
               <section class="panel">
                 <div class="filters">
-                  <input type="search" id="search" placeholder="Suche Titel/Ort…" value="${this.filter.text}" />
-                  <label><input type="checkbox" id="f-changed" ${this.filter.changedOnly ? "checked" : ""}/> geändert</label>
-                  <label><input type="checkbox" id="f-recurring" ${this.filter.recurringOnly ? "checked" : ""}/> Serie</label>
-                  <label><input type="checkbox" id="f-alarm" ${this.filter.alarmOnly ? "checked" : ""}/> Alarm</label>
+                  <input type="search" id="search" placeholder="Search title/location…" value="${this.filter.text}" />
+                  <label><input type="checkbox" id="f-changed" ${this.filter.changedOnly ? "checked" : ""}/> changed</label>
+                  <label><input type="checkbox" id="f-recurring" ${this.filter.recurringOnly ? "checked" : ""}/> recurring</label>
+                  <label><input type="checkbox" id="f-alarm" ${this.filter.alarmOnly ? "checked" : ""}/> alarm</label>
                 </div>
                 <div id="list"></div>
               </section>
@@ -137,12 +137,12 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
                 <div id="report"></div>
               </section>
              </div>`
-          : `<div class="empty">Öffne eine <code>.ics</code>-Datei, um zu starten. Alles bleibt lokal im Browser.</div>`
+          : `<div class="empty">Open a <code>.ics</code> file to get started. Everything stays local in your browser.</div>`
       }
       <footer class="statusbar">
         <div class="statusbar-group">
-          <span class="file-label">Datei:</span>
-          <span class="file-name">${hasModel ? escapeHtml(this.fileName) : "Keine Datei geöffnet"}</span>
+          <span class="file-label">File:</span>
+          <span class="file-name">${hasModel ? escapeHtml(this.fileName) : "No file open"}</span>
         </div>
         <div class="statusbar-meta">
           <div class="statusbar-group statusbar-version">
@@ -199,7 +199,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     if (!list) return;
     const events = this.visibleEvents();
     if (events.length === 0) {
-      list.innerHTML = `<div class="empty">Keine Termine.</div>`;
+      list.innerHTML = `<div class="empty">No events.</div>`;
       return;
     }
     list.innerHTML = events
@@ -208,7 +208,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
         const recurring = ev.parsed.rrule.length > 0 ? "↻" : "";
         const alarm = ev.component.children.some((c) => c.kind === "VALARM") ? "⏰" : "";
         const idx = this.model!.events.indexOf(ev);
-        const summaryLabel = ev.parsed.summary ?? "(ohne Titel)";
+        const summaryLabel = ev.parsed.summary ?? "(untitled)";
         return `<div class="event-row ${changed ? "changed" : ""} ${ev === this.selected ? "selected" : ""}" data-idx="${idx}" data-i="${i}">
           <span class="when">${fmtWhen(ev)}</span>
           <span class="title" title="${escapeHtml(summaryLabel)}">${escapeHtml(summaryLabel)}</span>
@@ -232,34 +232,34 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     if (!editor) return;
     const ev = this.selected;
     if (!ev) {
-      editor.innerHTML = `<div class="empty">Termin auswählen, um Details zu bearbeiten.</div>`;
+      editor.innerHTML = `<div class="empty">Select an event to edit its details.</div>`;
       return;
     }
     const p = ev.parsed;
     editor.innerHTML = `
-      <div class="field"><label>UID (schreibgeschützt)</label><div class="readonly uid-value">${escapeHtml(p.uid)}</div></div>
-      <div class="field"><label>Titel (SUMMARY)</label><input id="e-summary" value="${escapeHtml(p.summary ?? "")}" /></div>
+      <div class="field"><label>UID (read-only)</label><div class="readonly uid-value">${escapeHtml(p.uid)}</div></div>
+      <div class="field"><label>Title (SUMMARY)</label><input id="e-summary" value="${escapeHtml(p.summary ?? "")}" /></div>
       <div class="row2">
-        ${renderDateTimeField("dtstart", "Beginn (DTSTART)", p.dtstart)}
-        ${renderDateTimeField("dtend", "Ende (DTEND)", p.dtend)}
+        ${renderDateTimeField("dtstart", "Start (DTSTART)", p.dtstart)}
+        ${renderDateTimeField("dtend", "End (DTEND)", p.dtend)}
       </div>
-      <div class="field"><label>Ort (LOCATION)</label><input id="e-location" value="${escapeHtml(p.location ?? "")}" /></div>
-      <div class="field"><label>Beschreibung (DESCRIPTION)</label><textarea id="e-description" class="description-input" rows="4">${escapeHtml(p.description ?? "")}</textarea></div>
+      <div class="field"><label>Location (LOCATION)</label><input id="e-location" value="${escapeHtml(p.location ?? "")}" /></div>
+      <div class="field"><label>Description (DESCRIPTION)</label><textarea id="e-description" class="description-input" rows="4">${escapeHtml(p.description ?? "")}</textarea></div>
 
       <details ${p.rrule.length ? "open" : ""}>
-        <summary>Wiederholung / Ausnahmen</summary>
-        <div class="field"><label>RRULE (roh)</label><input id="e-rrule" value="${escapeHtml(p.rrule[0] ?? "")}" /></div>
-        <div class="field"><label>EXDATE (roh)</label><input id="e-exdate" value="${escapeHtml(p.exdate.join(",") )}" readonly /></div>
+        <summary>Recurrence / exceptions</summary>
+        <div class="field"><label>RRULE (raw)</label><input id="e-rrule" value="${escapeHtml(p.rrule[0] ?? "")}" /></div>
+        <div class="field"><label>EXDATE (raw)</label><input id="e-exdate" value="${escapeHtml(p.exdate.join(",") )}" readonly /></div>
       </details>
 
       <details>
-        <summary>Rohdaten (${ev.component.properties.length} Properties)</summary>
+        <summary>Raw data (${ev.component.properties.length} properties)</summary>
         <pre style="white-space:pre-wrap">${escapeHtml(ev.component.properties.map((x) => x.rawLines.join("\\n") || `${x.name}:${x.value}`).join("\n"))}</pre>
       </details>
 
       <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-        <button id="e-delete" style="color:var(--danger)">Löschen</button>
-        <span style="margin-left:auto; color:var(--muted)">${ev.changedProperties.size ? "geändert: " + [...ev.changedProperties].join(", ") : "unverändert"}</span>
+        <button id="e-delete" style="color:var(--danger)">Delete</button>
+        <span style="margin-left:auto; color:var(--muted)">${ev.changedProperties.size ? "changed: " + [...ev.changedProperties].join(", ") : "unchanged"}</span>
       </div>
     `;
 
@@ -287,7 +287,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     this.bindDateTimeField(ev, "dtend", "DTEND");
 
     this.querySelector("#e-delete")?.addEventListener("click", () => {
-      if (confirm("Diesen Termin löschen? Andere Termine bleiben unverändert.")) {
+      if (confirm("Delete this event? All other events will remain unchanged.")) {
         const visible = this.visibleEvents();
         const i = visible.indexOf(ev);
         deleteEvent(ev);
@@ -318,9 +318,9 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
 
   private onAdd(): void {
     if (!this.model) return;
-    const summary = prompt("Titel des neuen Termins?", "Neuer Termin");
+    const summary = prompt("Title of the new event?", "New event");
     if (summary === null) return;
-    const dtstart = prompt("DTSTART (z. B. 20261224T120000 oder 20261224 für ganztägig)?", "");
+    const dtstart = prompt("DTSTART (for example 20261224T120000 or 20261224 for all-day)?", "");
     if (!dtstart) return;
     const allDay = /^\d{8}$/.test(dtstart);
     const ev = addEvent(this.model, { summary, dtstart, allDay }, this.uidSuffix);
@@ -335,7 +335,7 @@ function formatRawDateTime(dtv?: DateTimeValue): string {
   let suffix = "";
   if (dtv.tzid) suffix = ` (${dtv.tzid})`;
   else if (dtv.isUtc || /Z$/.test(dtv.raw)) suffix = " (UTC)";
-  else if (dtv.isDate) suffix = " (ganztägig)";
+  else if (dtv.isDate) suffix = " (all-day)";
   return `${dtv.raw}${suffix}`;
 }
 
