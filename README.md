@@ -1,7 +1,5 @@
 # Keepical — Edit what matters. Keep the rest.
 
-![logo](./src/assets/keepical-applogo.png)
-
 Live version (GitHub Pages): https://clavicarius.github.io/keepical/
 
 **Keepical** is a static, fully client-side web app for **loss-minimizing** editing of
@@ -12,6 +10,8 @@ Instead, every component is stored twice — as **original lines** (`rawLines`) 
 
 > **Core promise:** If you only change an event title, all other properties of that
 > event **and** all other `VEVENT`s remain as byte-identical as possible.
+
+![logo](./src/assets/keepical-applogo.png)
 
 ## Name
 
