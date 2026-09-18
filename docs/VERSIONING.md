@@ -14,6 +14,10 @@ version tag and then **calls** the GitHub Pages workflow via `workflow_call`
 tag push to start another workflow — those pushes do not trigger `on.push.tags`
 listeners.
 
+The reusable deploy workflow must **not** gate upload/deploy on
+`github.event_name == 'workflow_call'`: reusable workflows inherit the caller
+event (here `push` on `main`), so that check never matches and would skip Pages.
+
 Manual Pages deployments remain available through `workflow_dispatch` on
 `.github/workflows/deploy.yml`. External or manually created `v*.*.*` tags can
 still trigger deploy directly via `on.push.tags`.

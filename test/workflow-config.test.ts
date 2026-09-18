@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 describe("workflow configuration", () => {
-  it("deploy workflow deploys only tag, manual, or workflow_call builds", () => {
+  it("deploy workflow has no main-branch push trigger and always uploads for its entry points", () => {
     const deployWorkflow = readFileSync(
       new URL("../.github/workflows/deploy.yml", import.meta.url),
       "utf8",
@@ -10,9 +10,10 @@ describe("workflow configuration", () => {
 
     expect(deployWorkflow).not.toMatch(/push:\s*\n\s*branches:\s*\n\s*-\s*main/m);
     expect(deployWorkflow).toContain("workflow_call:");
-    expect(deployWorkflow).toContain(
-      "if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || startsWith(github.ref, 'refs/tags/v')",
-    );
+    expect(deployWorkflow).toContain("uses: actions/upload-pages-artifact@v3");
+    expect(deployWorkflow).toContain("uses: actions/deploy-pages@v4");
+    // Caller-context: do not gate upload/deploy on event_name == workflow_call
+    expect(deployWorkflow).not.toContain("github.event_name == 'workflow_call'");
   });
 
   it("versioning workflow keeps PR runs as dry-runs and calls deploy after publishing", () => {
