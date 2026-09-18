@@ -1,0 +1,82 @@
+name: Rebrand asset rename and verify
+
+on:
+  push:
+    branches:
+      - rebrand/keepical
+
+permissions:
+  contents: write
+
+jobs:
+  rename-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: rebrand/keepical
+          fetch-depth: 0
+
+      - name: Rename ICS-editor assets and sync package-lock name
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          changed=0
+          if [ -f src/assets/ICS-editor-logo.png ]; then
+            git mv src/assets/ICS-editor-logo.png src/assets/keepical-logo.png
+            git mv src/assets/ICS-editor-applogo.png src/assets/keepical-applogo.png
+            git mv src/assets/ICS-editor-appicon.png src/assets/keepical-appicon.png
+            git mv src/assets/ICS-editor-favicon.png src/assets/keepical-favicon.png
+            changed=1
+          fi
+
+          node <<'NODE'
+          const fs = require("fs");
+          const p = JSON.parse(fs.readFileSync("package-lock.json", "utf8"));
+          let dirty = false;
+          if (p.name !== "keepical") { p.name = "keepical"; dirty = true; }
+          if (p.packages?.[""] && p.packages[""].name !== "keepical") {
+            p.packages[""].name = "keepical";
+            dirty = true;
+          }
+          if (dirty) {
+            fs.writeFileSync("package-lock.json", JSON.stringify(p, null, 2) + "\n");
+            process.exit(2);
+          }
+          NODE
+          lock_status=$?
+          if [ "$lock_status" -eq 2 ]; then
+            changed=1
+          elif [ "$lock_status" -ne 0 ]; then
+            exit "$lock_status"
+          fi
+
+          if [ "$changed" -eq 1 ]; then
+            rm -f .github/workflows/rebrand-assets.yml
+            git add -A
+            git commit -m "chore: rename brand assets to keepical-*"
+            git push
+          else
+            echo "Assets and package-lock already up to date"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Ensure no ICS-editor asset files remain
+        run: |
+          set -euo pipefail
+          leftover="$(find src/assets -name 'ICS-editor-*' -print || true)"
+          if [ -n "$leftover" ]; then
+            echo "Leftover ICS-editor assets:"
+            echo "$leftover"
+            exit 1
+          fi

@@ -1,10 +1,10 @@
-# ICS-Editor — verlustarm & lokal
+# Keepical — Nur ändern, was du willst.
 
-![logo](./src/assets/ICS-editor-applogo.png)
+![logo](./src/assets/keepical-applogo.png)
 
-Lauffähige Version (GitHub Pages): https://clavicarius.github.io/ics-editor/
+Lauffähige Version (GitHub Pages): https://clavicarius.github.io/keepical/
 
-Eine statische, rein clientseitige Web-App zum **verlustarmen** Bearbeiten von
+**Keepical** ist eine statische, rein clientseitige Web-App zum **verlustarmen** Bearbeiten von
 `.ics`-Dateien (iCalendar). Kernidee: Die App wandelt den Kalender **nicht** in ein
 vereinfachtes internes Modell um, um ihn danach komplett neu zu serialisieren.
 Stattdessen wird jede Komponente doppelt gehalten — als **Originalzeilen** (`rawLines`)
@@ -13,6 +13,19 @@ und als **interpretierte Daten** (`parsed`).
 > **Kernversprechen:** Wird an einem Termin nur der Titel geändert, bleiben alle
 > übrigen Properties dieses Termins **und** alle anderen `VEVENT`s so weit wie
 > möglich byte-identisch.
+
+## Name
+
+| | |
+| --- | --- |
+| Display | Keepical |
+| Slug | `keepical` |
+| Aussprache | KEEP-ih-cal |
+| Tagline | Nur ändern, was du willst. |
+
+Keepical verbindet keep und iCal: Die App bearbeitet .ics-Dateien, lässt aber möglichst viel am Original unverändert — unangetastete Termine, Properties und Struktur bleiben erhalten statt neu serialisiert zu werden. Der Name steht für genau dieses Versprechen: ändern, was nötig ist — den Rest behalten.
+
+Kurzvariante: Keepical = keep + iCal. Editieren ohne den Kalender unnötig umzuschreiben.
 
 ## Warum nicht einfach ICAL.js?
 
