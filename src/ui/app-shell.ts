@@ -183,6 +183,17 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     }
   }
 
+  /** Keep selected row and editor form in view after selection re-renders. */
+  private ensureSelectionVisible(): void {
+    if (!this.selected) return;
+    this.querySelector("#list")
+      ?.querySelector(".event-row.selected")
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const panel = this.querySelector(".editor-panel");
+    if (panel instanceof HTMLElement) panel.scrollTop = 0;
+    this.querySelector("#editor")?.scrollIntoView({ block: "nearest" });
+  }
+
   private renderList(): void {
     const list = this.querySelector("#list");
     if (!list) return;
@@ -210,6 +221,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
         this.selected = this.model!.events[idx];
         this.renderList();
         this.renderEditor();
+        this.ensureSelectionVisible();
       });
     });
   }
@@ -309,6 +321,7 @@ ${r.perEvent.map((d) => `\n${d.uid}\n  geändert: ${d.changed.join(", ")}`).join
     const ev = addEvent(this.model, { summary, dtstart, allDay }, this.uidSuffix);
     this.selected = ev;
     this.render();
+    this.ensureSelectionVisible();
   }
 }
 
