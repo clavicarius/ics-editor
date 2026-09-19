@@ -1,6 +1,7 @@
 # Keepical — Edit what matters. Keep the rest.
 
 Live version (GitHub Pages): https://clavicarius.github.io/keepical/
+Project wiki: https://github.com/clavicarius/keepical/wiki
 
 **Keepical** is a static, fully client-side web app for **loss-minimizing** editing of
 `.ics` files (iCalendar). The core idea is that the app does **not** transform the
@@ -63,13 +64,11 @@ If either step fails, the commit is aborted. Emergency exit: `git commit --no-ve
 
 ## Documentation
 
-Public documentation is the single source of truth under [`docs/wiki/`](docs/wiki/Home.md):
+Public documentation is the single source of truth under https://github.com/clavicarius/keepical/wiki
+The GitHub Wiki is synchronized only from `docs/wiki/**` via the workflow in [`.github/workflows/wiki.yml`](.github/workflows/wiki.yml).
 
-- [Home](docs/wiki/Home.md) — entry point
-- [Architecture](docs/wiki/Architecture.md) · [Parser](docs/wiki/Parser.md) · [Export](docs/wiki/Export-and-Validation.md)
-- [UI](docs/wiki/UI.md) · [Testing](docs/wiki/Testing.md) · [Roadmap](docs/wiki/Roadmap.md) · [Deployment](docs/wiki/Deployment.md) · [Versioning](docs/wiki/VERSIONING.md)
+Internal or non-public notes belong in [`docs/internal/`](docs/internal/README.md), including the archived plan and local setup notes. 
 
-Internal or non-public notes belong in [`docs/internal/`](docs/internal/README.md), including the archived plan and local setup notes. The GitHub Wiki is synchronized only from `docs/wiki/**` via the workflow in [`.github/workflows/wiki.yml`](.github/workflows/wiki.yml).
 
 ## Architecture (short overview)
 
