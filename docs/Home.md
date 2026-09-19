@@ -7,6 +7,11 @@ loss-minimizing editing of `.ics` files without losing unknown properties,
 > **Core promise:** If you only change an event title, all other properties of that
 > event **and** all other `VEVENT`s remain as byte-identical as possible.
 
+## Live links
+
+- [Hosted app (GitHub Pages)](https://clavicarius.github.io/keepical/)
+- [GitHub Wiki](https://github.com/clavicarius/keepical/wiki)
+
 ## Navigation
 
 | Page | Content |
