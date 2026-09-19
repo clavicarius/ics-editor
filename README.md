@@ -1,7 +1,8 @@
 # Keepical — Edit what matters. Keep the rest.
 
-Live version (GitHub Pages): https://clavicarius.github.io/keepical/
-Project wiki: https://github.com/clavicarius/keepical/wiki
+- [Hosted app (GitHub Pages)](https://clavicarius.github.io/keepical/)
+- [GitHub Wiki](https://github.com/clavicarius/keepical/wiki)
+
 
 **Keepical** is a static, fully client-side web app for **loss-minimizing** editing of
 `.ics` files (iCalendar). The core idea is that the app does **not** transform the
@@ -12,7 +13,7 @@ Instead, every component is stored twice — as **original lines** (`rawLines`) 
 > **Core promise:** If you only change an event title, all other properties of that
 > event **and** all other `VEVENT`s remain as byte-identical as possible.
 
-![logo](./src/assets/keepical-applogo.png)
+![logo](./docs/wiki/assets/keepical-applogo.png)
 
 ## Name
 
