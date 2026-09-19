@@ -16,7 +16,6 @@ loss-minimizing editing of `.ics` files without losing unknown properties,
 
 | Page | Content |
 | --- | --- |
-| [Plan](Plan.md) | Archived architecture and implementation plan |
 | [Architecture](Architecture.md) | Guiding principle (raw/patch), data model, export strategy |
 | [Parser](Parser.md) | Unfolding, content-line split, component tree, VEVENT interpretation |
 | [Export & Validation](Export-and-Validation.md) | Folding, patch serializer, validation, export report |

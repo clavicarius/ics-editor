@@ -2,7 +2,6 @@
 
 - [Hosted app](https://clavicarius.github.io/keepical/)
 - [Home](Home.md)
-- [Plan](Plan.md)
 - [Architecture](Architecture.md)
 - [Parser](Parser.md)
 - [Export & Validation](Export-and-Validation.md)

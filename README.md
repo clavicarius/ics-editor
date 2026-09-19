@@ -63,15 +63,13 @@ If either step fails, the commit is aborted. Emergency exit: `git commit --no-ve
 
 ## Documentation
 
-The code wiki lives under [`docs/`](docs/Home.md):
+Public documentation is the single source of truth under [`docs/wiki/`](docs/wiki/Home.md):
 
-- [Home](docs/Home.md) — entry point
-- [Plan](docs/Plan.md) — archived architecture and implementation plan
-- [Architecture](docs/Architecture.md) · [Parser](docs/Parser.md) · [Export](docs/Export-and-Validation.md)
-- [UI](docs/UI.md) · [Testing](docs/Testing.md) · [Roadmap](docs/Roadmap.md) · [Deployment](docs/Deployment.md) · [Versioning](docs/VERSIONING.md)
+- [Home](docs/wiki/Home.md) — entry point
+- [Architecture](docs/wiki/Architecture.md) · [Parser](docs/wiki/Parser.md) · [Export](docs/wiki/Export-and-Validation.md)
+- [UI](docs/wiki/UI.md) · [Testing](docs/wiki/Testing.md) · [Roadmap](docs/wiki/Roadmap.md) · [Deployment](docs/wiki/Deployment.md) · [Versioning](docs/wiki/VERSIONING.md)
 
-GitHub wiki compatibility: [`docs/_Sidebar.md`](docs/_Sidebar.md) can be copied into
-the GitHub wiki as-is.
+Internal or non-public notes belong in [`docs/internal/`](docs/internal/README.md), including the archived plan and local setup notes. The GitHub Wiki is synchronized only from `docs/wiki/**` via the workflow in [`.github/workflows/wiki.yml`](.github/workflows/wiki.yml).
 
 ## Architecture (short overview)
 
@@ -82,13 +80,13 @@ src/
   export/    Folding, raw-vs-patch serialization
   validate/  Structural checks + export report/diff
   ui/        Web Components (list, editor, RRULE, report)
-docs/        Code wiki (see above)
+docs/        Repository docs; public wiki source is docs/wiki/
 ```
 
 ## Status
 
 Early stage. Order: parser + lossless roundtrip (milestone) → editing → recurrence →
-validation/diff → deployment (GitHub Pages). See [Roadmap](docs/Roadmap.md) and the
+validation/diff → deployment (GitHub Pages). See [Roadmap](docs/wiki/Roadmap.md) and the
 GitHub issues for the individual phases.
 
 ## License
