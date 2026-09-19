@@ -2,6 +2,14 @@
   "name": "keepical",
   "version": "0.1.0",
   "description": "Keepical — verlustarmer, rein clientseitiger ICS-Editor (raw/patch-basiert)",
+  "keywords": [
+    "icalendar",
+    "ics",
+    "ics-editor",
+    "calendar-editor",
+    "client-side",
+    "privacy-first"
+  ],
   "type": "module",
   "license": "MIT",
   "scripts": {
